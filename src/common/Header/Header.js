@@ -1,12 +1,6 @@
 import React from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity, Platform, Dimensions,
-} from 'react-native'
+import {View, Text, StyleSheet, TouchableOpacity, Platform, Dimensions} from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import tool from '../../utils/tool'
 import { tools } from '../../utils'
 const { width } = Dimensions.get('window')
 

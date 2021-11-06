@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, ScrollView, Image, Dimensions} from 'react-native'
+import {StyleSheet,View, ScrollView, Image, Dimensions} from 'react-native'
 import httpConfig from "../../api/httpConfig";
 
 const {width, height} = Dimensions.get('window')
@@ -34,6 +34,13 @@ const PromotionDetailScreen = ({route}) => {
         </ScrollView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+    },
+})
 
 export default PromotionDetailScreen;
 

@@ -9,7 +9,7 @@ const HotMovieContainer = ({hotMovies, onViewAll, onItemPress, onGotoBuy}) => {
 
   const renderHotMovieItem = ({item, index}) => {
     const text =
-      item.activity == 1 ? '特惠' : item.tobeFlg == 1 ? '预售' : '购票';
+      item.activity === 1 ? '特惠' : item.tobeFlg === 1 ? '预售' : '购票';
     const {movieExts = []} = item;
     const cinemaLabel = movieExts
       .filter(val => val.movTypCd)

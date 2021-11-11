@@ -1,7 +1,7 @@
 import {
-  StyleSheet,
-  Text,
-  ScrollView,
+    StyleSheet,
+    Text,
+    ScrollView, RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import HomeBanner from './HomeBanner';
@@ -11,81 +11,106 @@ import SoonMovieContainer from './SoonMovieContainer';
 import {navigate} from '../../utils';
 import HomeRecommend from './HomeRecomend';
 
+let scrollRef = null
+
 const bannerUrl =
-  '/content/api/advert/query?channel=APP&advertType=APP_SY_HEAD_AD&thatCd=';
+    '/content/api/advert/query?channel=APP&advertType=APP_SY_HEAD_AD&thatCd=';
 const hotMovie =
-  '/product/plans?prMainPage=true&currentPage=0&prCity=31&chnlNo=05';
+    '/product/plans?prMainPage=true&currentPage=0&prCity=226&chnlNo=05';
 const recommendUrl =
-  '/content/api/advert/query?channel=APP&advertType=APP_SY_FOOT_AD&thatCd=';
+    '/content/api/advert/query?channel=APP&advertType=APP_SY_FOOT_AD&thatCd=';
 
 function MovieScreen() {
-  const [list, setList] = useState([]);
-  const [hotData, setHotData] = useState([]);
-  const [soonData, setSoonData] = useState([]);
-  const [recommend, setRecommend] = useState([]);
+    const [list, setList] = useState([]);
+    const [hotData, setHotData] = useState([]);
+    const [soonData, setSoonData] = useState([]);
+    const [recommend, setRecommend] = useState([]);
+    const [refreshing, setRefreshing] = React.useState(false)
 
-  const onViewAll = (params = {}) => {
-    navigate('AllSellMovieScreen', params);
-  };
+    useEffect(() => {
+        getBannerList();
+        getHotMovies();
+        getSoonMovies();
+        getRecommend();
+    }, []);
 
-  const onViewSoonAll = (params = {}) => {
-    navigate('AllSoonMovieScreen', params);
-  };
+    async function getHotMovies() {
+        const data = await apiRequest.get(hotMovie);
+        setHotData(data || []);
+    }
 
-  async function getHotMovies() {
-    const data = await apiRequest.get(hotMovie);
-    setHotData(data || []);
-  }
+    async function getBannerList() {
+        const data = await apiRequest.get(bannerUrl);
+        setList(data || []);
+    }
 
-  async function getBannerList() {
-    const data = await apiRequest.get(bannerUrl);
-    setList(data || []);
-  }
+    async function getSoonMovies() {
+        let baseUrl = 'https://prd-api.cgv.com.cn/product/movie/list-soon';
+        let param = {
+            pageNumber: 0,
+            cityCd: 226,
+            chnlNo: '05',
+            productTypeCd: '3',
+        };
+        const data = await apiRequest.post(baseUrl, param);
+        setSoonData(data || []);
+    }
 
-  async function getSoonMovies() {
-    let baseUrl = 'https://prd-api.cgv.com.cn/product/movie/list-soon';
-    let param = {
-      pageNumber: 0,
-      cityCd: 31,
-      chnlNo: '05',
-      productTypeCd: '3',
+    async function getRecommend() {
+        const data = await apiRequest.get(recommendUrl);
+        setRecommend(data || []);
+    }
+
+    function onRefresh() {
+        try {
+            setRefreshing(true)
+            getBannerList();
+            getHotMovies();
+            getSoonMovies();
+            getRecommend();
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setRefreshing(false)
+        }
+    }
+
+    const onViewAll = (params = {}) => {
+        navigate('AllSellMovieScreen', params);
     };
-    const data = await apiRequest.post(baseUrl, param);
-    setSoonData(data || []);
-  }
 
-  async function getRecommend() {
-    const data = await apiRequest.get(recommendUrl);
-    console.log('getRecommend', data);
-    setRecommend(data || []);
-  }
+    const onViewSoonAll = (params = {}) => {
+        navigate('AllSoonMovieScreen', params);
+    };
 
-  useEffect(() => {
-    getBannerList();
-    getHotMovies();
-    getSoonMovies();
-    getRecommend();
-  }, []);
+    const onItemPress = (params = {}) => {
+        navigate('MovieDetailScreen', { ...params})
+    }
 
-  return (
-    <ScrollView style={styles.contain}>
-      <HomeBanner list={list} />
-      <HotMovieContainer hotMovies={hotData} onViewAll={() => onViewAll()} />
-      <SoonMovieContainer
-        soonMovies={soonData}
-        onViewAll={() => onViewSoonAll()}
-      />
-      <HomeRecommend list={recommend} />
-    </ScrollView>
-  );
+    return (
+        <ScrollView style={styles.contain}
+                    ref={e => scrollRef = e}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()}/>
+                    }>
+            <HomeBanner list={list}/>
+            <HotMovieContainer hotMovies={hotData} onViewAll={() => onViewAll()} onItemPress={onItemPress}/>
+            <SoonMovieContainer
+                soonMovies={soonData}
+                onViewAll={() => onViewSoonAll()}
+                onItemPress={onItemPress}
+            />
+            <HomeRecommend list={recommend}/>
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-  contain: {
-    flex: 1,
-    paddingTop: 3,
-    backgroundColor: '#fff',
-  },
+    contain: {
+        flex: 1,
+        paddingTop: 3,
+        backgroundColor: '#fff',
+    },
 });
 
 export default MovieScreen;

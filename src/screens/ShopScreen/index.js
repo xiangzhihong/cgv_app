@@ -12,7 +12,6 @@ import {
 } from 'react-native'
 import MenuItem from './components/MenuItem'
 import FriendCards from './components/FriendCards'
-import AdvertisingBanner from '../../common/AdvertisingBanner/AdvertisingBanner'
 import SectionTitle from './components/SectionTitle'
 import SpliteLine from './components/SpliteLine'
 import ButtonListFooter from '../../common/ButtonListFooter/ButtonListFooter'
@@ -22,7 +21,6 @@ import {bizstream} from '../../bizstream'
 import {navigate, tools} from '../../utils'
 import Header from '../../common/Header/Header'
 import apiRequest from "../../api";
-import Swiper from "react-native-swiper";
 import httpConfig from "../../api/httpConfig";
 import Holder from "../../common/Holder";
 

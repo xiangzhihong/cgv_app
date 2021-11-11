@@ -4,6 +4,7 @@ import AllMovieScreen from '../screens/AllMovieScreen/AllSellMovieScreen';
 import CitySelectScreen from "./CitySelectScreen";
 import PromotionDetailScreen from "./PromotionDetailScreen/PromotionDetailScreen";
 import SelectorScreen from "./SelectorScreen/SelectorScreen";
+import MovieDetailScreen from "./MovieDetailScreen";
 
 export const stacks = [
   {
@@ -42,6 +43,11 @@ export const stacks = [
         ),
       }
     },
+  },
+  {
+    name: 'MovieDetailScreen',
+    component: MovieDetailScreen,
+    options: { headerShown: false },
   },
 ];
 

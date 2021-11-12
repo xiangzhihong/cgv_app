@@ -8,11 +8,11 @@ const headers = {
 };
 
 axios.defaults.baseURL = baseConfig.baseUrl;
+axios.defaults.headers.Authorization = baseConfig.authentication;
 axios.defaults.headers = headers;
 axios.defaults.timeout = 30000;
 
 axios.interceptors.request.use(config => {
-  // config.headers.Authorization = baseConfig.authentication;
   if (config.method === 'get') {
     config.params = {
       ...config.data,

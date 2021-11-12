@@ -46,13 +46,7 @@ const MovieDetail = (
     {
         route,
         navigation,
-        getMovieStills: _getMovieStills,
-        getMovieCommentList: _getMovieCommentList,
-        movieComments,
         thatCd,
-        movieTopics,
-        getMovieTopicsList: _getMovieTopicsList,
-        totalMovieComments,
         commentPage,
         isLogin,
     }) => {
@@ -60,16 +54,15 @@ const MovieDetail = (
     const {movieId = {}, update, title} = params
     const [activeIndex, setActiveIndex] = useState(0)
     const [showMore, setShowMore] = useState(false)
-    const [status, setStatus] = useState('LOADING')
     const [detail, setDetail] = useState({})
+    const [movieComments, setMovieComments] = useState([])
     const [likeLoading, setLikeLoading] = useState(false)
     const [showVideo, setShowVideo] = useState(false)
-
 
     useEffect(() => {
         getDetail()
         getMovieStills()
-        // _getMovieCommentList(movieId, 0)
+        getMovieCommentList()
         // _getMovieTopicsList(movieId, 0)
         return () => {
             scrollY.removeAllListeners()
@@ -78,7 +71,6 @@ const MovieDetail = (
 
     // 获取详情
     async function getDetail() {
-        console.log('getDetail: ' + movieId)
         let baseUrl = '/product/movie/' + movieId
         let param = {
             chnlNo: '05',
@@ -88,6 +80,7 @@ const MovieDetail = (
         setDetail(res.product)
     }
 
+    //获取剧照
     async function getMovieStills() {
         let baseUrl = '/product/movie-content/list'
         let param = {
@@ -95,7 +88,21 @@ const MovieDetail = (
             pageSize: 50,
         };
         const res = await apiRequest.post(baseUrl, param)
-        console.log('getMovieStills',res)
+    }
+
+    //获取影评
+    async function getMovieCommentList() {
+        console.log('getMovieCommentList: ' + movieId)
+        let baseUrl = '/product/product-reviews/ext/productReviewList'
+        let param = {
+            postedAnonymous:'1',
+            productId: movieId,
+            cityCd:226,
+            pageNumber:0,
+            pageSize: 10,
+        };
+        const res = await apiRequest.post(baseUrl, param)
+        setMovieComments(res.content)
     }
 
     const clickLike = async (data) => {
@@ -178,45 +185,9 @@ const MovieDetail = (
     }
 
     const onPraisePress = async (data) => {
-        if (!isLogin) {
-            return navigation.navigate('MyModal', {screen: 'LoginScreen'})
-        }
-        const {id, myLike = {}, likeCnt} = data
-        let productLike
-        if (!myLike || myLike.productLike === '0') {
-            // 未点赞
-            productLike = '1'
-        } else {
-            productLike = '0'
-            // 已点赞
-        }
-        try {
-            const res = await bizstream.customer.clickLike(productLike, id, '2', thatCd)
-            if (res.code === 200) {
-                console.log(movieComments)
-                const result = movieComments.map(item => {
-                    if (item.id === id) {
-                        if (!item.myLike) {
-                            item.myLike = {}
-                        }
-                        item.likeCnt = productLike === '1' ? item.likeCnt + 1 : item.likeCnt - 1
-                        item.myLike = Object.assign(item.myLike, {productLike})
-                    }
-                    return item
-                })
-                tools.Toast.toast(productLike === '1' ? '点赞成功' : '取消点赞', 1)
-            } else {
-                tools.Toast.toast('点赞功能维护中稍后再试！', 1)
-            }
 
-        } catch (e) {
-            tools.Toast.toast('点赞功能维护中稍后再试！', 1)
-        }
     }
 
-    const {productAttributes = [], productId, btnType, activity} = detail
-    const Buttontext = activity === '1' ? '特惠购票' : btnType === '2' ? '预售' : btnType === '3' ? '立即购票' : '敬请期待'
-    const color = activity === '1' ? '#F1A23D' : btnType === '2' ? '#389AFC' : '#FC5869'
 
     function renderHeaderView() {
         return (<Header
@@ -237,6 +208,49 @@ const MovieDetail = (
             }}/>);
     }
 
+    const {productAttributes = [], productId, btnType, activity} = detail
+    const Buttontext = activity === '1' ? '特惠购票' : btnType === '2' ? '预售' : btnType === '3' ? '立即购票' : '敬请期待'
+    const color = activity === '1' ? '#F1A23D' : btnType === '2' ? '#389AFC' : '#FC5869'
+
+    function renderIntroView() {
+        return (
+            <Intro desc={detail.longDescription} productAttributes={productAttributes} showMore={showMore}
+                   onClickShow={() => setShowMore(!showMore)}/>
+        );
+    }
+
+    function renderStillPartView() {
+        return (
+            <StillPart
+                onItemPress={(index) => navigation.navigate('StillShareScreen', {
+                    active: index,
+                    images: detail?.stageImageUrl?.split(','),
+                    title,
+                    type: 'movie',
+                    description: detail.description
+                })}
+                stills={detail?.stageImageUrl?.split(',')}
+                onSectionHeaderPress={() => goPage('AllStillScreen', {
+                    title,
+                    images: detail?.stageImageUrl?.split(','),
+                    type: 'movie',
+                    description: detail.description
+                })}/>
+        );
+    }
+
+    function renderCommentView() {
+        return (
+            movieComments && <CommentPart
+                onPraisePress={onPraisePress}
+                commentList={movieComments.slice(0, 3)}
+                onSectionHeaderPress={() => goPage('PublishCommentScreen', { type: '1', title: `${title }的评论`, movieId })}
+                onItemPress={(item) => goPage('PersonalCommentScreen', { movieId, title: item.nickname, ...item, images: detail?.stageImageUrl?.split(',') })}
+                onPressBottom={() => goPage('AllCommentScreen', { movieId, title, status: 1, images: detail?.stageImageUrl?.split(',') })}
+            />
+        );
+    }
+
     return (
         <View style={{flex: 1, backgroundColor: '#efefef'}}>
             <HeaderImage source={{uri: httpConfig.mediaUrl + detail.smallImageUrl}}/>
@@ -253,45 +267,21 @@ const MovieDetail = (
                             backgroundColor: 'transparent',
                             height: ImageHeight - TotalHeaderHeight - 40
                         }}/>
-                        {
-                            renderMovieCard(detail, clickLike)
-                        }
+                        {renderMovieCard(detail, clickLike)}
                     </View>
                     <Tab activeIndex={activeIndex} onTabClick={onTabClick}/>
                     <View onLayout={(e) => {
                         introY = getTargetPartY(e.nativeEvent.layout.y)
                     }}>
-                        <Intro desc={detail.longDescription} productAttributes={productAttributes} showMore={showMore}
-                               onClickShow={() => setShowMore(!showMore)}/>
+                        {renderIntroView()}
                     </View>
                     <View onLayout={(e) => {
                         stillY = getTargetPartY(e.nativeEvent.layout.y)
                     }}>
-                        <StillPart
-                            onItemPress={(index) => navigation.navigate('StillShareScreen', {
-                                active: index,
-                                images: detail?.stageImageUrl?.split(','),
-                                title,
-                                type: 'movie',
-                                description: detail.description
-                            })}
-                            stills={detail?.stageImageUrl?.split(',')}
-                            onSectionHeaderPress={() => goPage('AllStillScreen', {
-                                title,
-                                images: detail?.stageImageUrl?.split(','),
-                                type: 'movie',
-                                description: detail.description
-                            })}
-                        />
+                        {renderStillPartView()}
                     </View>
                     <View onLayout={(e) => commentY = getTargetPartY(e.nativeEvent.layout.y)}>
-                        {/*<CommentPart*/}
-                        {/*    onPraisePress={onPraisePress}*/}
-                        {/*    commentList={movieComments.slice(0, 3)}*/}
-                        {/*    onSectionHeaderPress={() => goPage('PublishCommentScreen', { type: '1', title: `${title }的评论`, movieId })}*/}
-                        {/*    onItemPress={(item) => goPage('PersonalCommentScreen', { movieId, title: item.nickname, ...item, images: detail?.stageImageUrl?.split(',') })}*/}
-                        {/*    onPressBottom={() => goPage('AllCommentScreen', { movieId, title, status: 1, images: detail?.stageImageUrl?.split(',') })}*/}
-                        {/*/>*/}
+                        {renderCommentView()}
                     </View>
                     <View onLayout={(e) => topicY = getTargetPartY(e.nativeEvent.layout.y)}>
                         {/*<Topic*/}

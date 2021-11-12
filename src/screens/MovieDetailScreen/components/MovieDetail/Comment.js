@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react'
 import {TouchableOpacity,Text,Button, StyleSheet, View } from 'react-native'
-import { useTheme } from '@react-navigation/native'
 import moment from 'moment'
 import Icon from 'react-native-vector-icons/Entypo'
 import CommentItem from '../../../../common/CommentItem'
@@ -15,7 +14,6 @@ const Comment = ({
   onPressBottom,
   onPraisePress,
 }) => {
-  const { colors } = useTheme()
 
   const report = async (data) => {
     try {
@@ -76,7 +74,7 @@ const Comment = ({
       <SectionHeader
         title="电影评论"
         renderRight={() =>
-          <Button onPress={onSectionHeaderPress} textStyle={{ fontSize: 13 }} style={[styles.button, { backgroundColor: colors.activeTintColor }]} title="发表评论" />
+          <Button onPress={onSectionHeaderPress} textStyle={{ fontSize: 13 }} style={[styles.button, { backgroundColor: '#E33322' }]} title="发表评论" />
         }
       />
       <View style={{ paddingLeft: 15 }}>
@@ -95,8 +93,6 @@ const Comment = ({
   )
 }
 
-export default Comment
-
 const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
@@ -111,3 +107,5 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.7,
   },
 })
+
+export default Comment

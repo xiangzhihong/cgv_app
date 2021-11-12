@@ -16,6 +16,7 @@ import {DatePicker} from '../common/Picker';
 import {navigate} from './rootNavigation';
 import AlertRadio from '../common/Alert/AlertRadio';
 import Loading from '../common/Alert/Loading';
+import httpConfig from "../api/httpConfig";
 
 const RCTToast =
   Platform.OS === 'android' ? ToastAndroid : NativeModules.LRDRCTSimpleToast;
@@ -373,6 +374,19 @@ const getConstantDeviceInfo = async () => {
   return deviceJSON;
 };
 
+const getImage = (uri, isAvatar = true) => {
+  if (isAvatar) {
+    if (uri) {
+      return `${httpConfig.mediaUrl}${uri}`
+    }
+    return require('../assets/images/defaultAvtar.png')
+  }
+  if (uri) {
+    return `${httpConfig.mediaUrl}${uri}`
+  }
+  return null
+}
+
 const formatDate = date => moment(date).format('YYYY-MM-DD');
 
 export default {
@@ -401,5 +415,6 @@ export default {
   showDatePicker,
   getConstantDeviceInfo,
   Toast,
+  getImage,
   formatDate,
 };

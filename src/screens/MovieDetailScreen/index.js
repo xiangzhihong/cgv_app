@@ -56,6 +56,7 @@ const MovieDetail = (
     const [showMore, setShowMore] = useState(false)
     const [detail, setDetail] = useState({})
     const [movieComments, setMovieComments] = useState([])
+    const [movieTopics, setMovieTopics] = useState([])
     const [likeLoading, setLikeLoading] = useState(false)
     const [showVideo, setShowVideo] = useState(false)
 
@@ -63,7 +64,7 @@ const MovieDetail = (
         getDetail()
         getMovieStills()
         getMovieCommentList()
-        // _getMovieTopicsList(movieId, 0)
+        getMovieTopicsList()
         return () => {
             scrollY.removeAllListeners()
         }
@@ -92,17 +93,28 @@ const MovieDetail = (
 
     //获取影评
     async function getMovieCommentList() {
-        console.log('getMovieCommentList: ' + movieId)
         let baseUrl = '/product/product-reviews/ext/productReviewList'
         let param = {
-            postedAnonymous:'1',
+            postedAnonymous: '1',
             productId: movieId,
-            cityCd:226,
-            pageNumber:0,
+            cityCd: 226,
+            pageNumber: 0,
             pageSize: 10,
         };
         const res = await apiRequest.post(baseUrl, param)
         setMovieComments(res.content)
+    }
+
+    //获取话题
+    async function getMovieTopicsList() {
+        let baseUrl = '/product/surveys/ext/topiclist'
+        let param = {
+            productId: movieId,
+            pageNumber: 0,
+            pageSize: 10,
+        };
+        const res = await apiRequest.post(baseUrl, param)
+        setMovieTopics(res.content)
     }
 
     const clickLike = async (data) => {
@@ -244,9 +256,38 @@ const MovieDetail = (
             movieComments && <CommentPart
                 onPraisePress={onPraisePress}
                 commentList={movieComments.slice(0, 3)}
-                onSectionHeaderPress={() => goPage('PublishCommentScreen', { type: '1', title: `${title }的评论`, movieId })}
-                onItemPress={(item) => goPage('PersonalCommentScreen', { movieId, title: item.nickname, ...item, images: detail?.stageImageUrl?.split(',') })}
-                onPressBottom={() => goPage('AllCommentScreen', { movieId, title, status: 1, images: detail?.stageImageUrl?.split(',') })}
+                onSectionHeaderPress={() => goPage('PublishCommentScreen', {type: '1', title: `${title}的评论`, movieId})}
+                onItemPress={(item) => goPage('PersonalCommentScreen', {
+                    movieId,
+                    title: item.nickname, ...item,
+                    images: detail?.stageImageUrl?.split(',')
+                })}
+                onPressBottom={() => goPage('AllCommentScreen', {
+                    movieId,
+                    title,
+                    status: 1,
+                    images: detail?.stageImageUrl?.split(',')
+                })}
+            />
+        );
+    }
+
+    function renderTopicView() {
+        return (
+            movieTopics && <Topic
+                commentList={movieTopics.slice(0, 3)}
+                onItemPress={(item) => {
+                    goPage('PersonalTopicScreen', {
+                        movieId,
+                        title: item.surveyName, ...item,
+                        images: item?.shareImage?.split(',')
+                    })
+                }}
+                onPressBottom={() => goPage('AllTopicScreen', {
+                    movieId,
+                    title,
+                    images: detail?.stageImageUrl?.split(',')
+                })}
             />
         );
     }
@@ -284,13 +325,7 @@ const MovieDetail = (
                         {renderCommentView()}
                     </View>
                     <View onLayout={(e) => topicY = getTargetPartY(e.nativeEvent.layout.y)}>
-                        {/*<Topic*/}
-                        {/*    commentList={movieTopics.slice(0, 3)}*/}
-                        {/*    onItemPress={(item) => {*/}
-                        {/*      goPage('PersonalTopicScreen', { movieId, title: item.surveyName, ...item, images: item?.shareImage?.split(',') })*/}
-                        {/*    }}*/}
-                        {/*    onPressBottom={() => goPage('AllTopicScreen', { movieId, title, images: detail?.stageImageUrl?.split(',') })}*/}
-                        {/*/>*/}
+                        {renderTopicView()}
                     </View>
 
                 </Animated.ScrollView>

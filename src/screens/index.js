@@ -10,6 +10,8 @@ import StillShareScreen from "./MovieStillScreen/StillShareScreen";
 import AllCommentScreen from "./CommentScreen/AllCommentScreen";
 import PublishCommentScreen from "./CommentScreen/PublishCommentScreen";
 import PersonalCommentScreen from "./CommentScreen/PersonalCommentScreen";
+import AllTopicScreen from "./TopicScreen/AllTopicScreen";
+import PersonalTopicScreen from "./TopicScreen/PersonalTopicScreen";
 
 export const stacks = [
     {
@@ -167,7 +169,47 @@ export const stacks = [
                 ),
             }
         },
-    }
+    },
+    {
+        name: 'AllTopicScreen',
+        component: AllTopicScreen,
+        options: ({ route }) => {
+            const { params = {} } = route
+            const { title = 'XX的话题' } = params
+            return {
+                title: `${title}的话题`,
+            }
+        },
+    },
+    {
+        name: 'PersonalTopicScreen',
+        component: PersonalTopicScreen,
+        options: ({ route, navigation }) => {
+            const { params = {} } = route
+            const { title = 'XX的话题讨论', images, description } = params
+            return {
+                title: '话题讨论',
+                headerRight: () => (
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.navigate('MovieShareScreen', {
+                                ...params,
+                                type: 'bbb',
+                                images,
+                                productReview: description,
+                            })
+                        }}
+                        activeOpacity={0.8}
+                        style={{ marginRight: 15 }}>
+                        <Image
+                            source={require('../assets/images/movie/share_black.png')}
+                            style={{ width: 16, height: 16 }}
+                        />
+                    </TouchableOpacity>
+                ),
+            }
+        },
+    },
 ];
 
 const styles = StyleSheet.create({

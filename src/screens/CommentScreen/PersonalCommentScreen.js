@@ -6,6 +6,7 @@ import Empty from '../../common/Empty'
 import InputBar from '../../common/InputBar'
 import {bizstream} from '../../bizstream'
 import {tools} from '../../utils'
+import apiRequest from "../../api";
 
 const animate = new Animated.Value(0)
 let inputRef
@@ -77,21 +78,26 @@ const PersonalCommentScreen = ({
             if (!loadMores) {
                 setLoading(true)
             }
-            const res = await bizstream.customer.getCommentDetail(id, productId, pageNumber)
-            if (res.code === 200) {
-                const {data = {}} = res
-                setDetail(data)
-                const {productReplyEntitys = {}} = data
-                const {content = []} = productReplyEntitys
-                setHasMore(content.length === 10)
-                if (content.length === 10) {
-                    setPage(page + 1)
-                }
-                if (loadMores) {
-                    setReply(reply.concat(content))
-                } else {
-                    setReply(content)
-                }
+            //获取评论详情
+            let baseUrl = '/product/product-reviews/ext/productReviewInfo'
+            let param = {
+                id:id,
+                productId: productId,
+                pageNumber:pageNumber,
+                pageSize: 10,
+            };
+            const res = await apiRequest.post(baseUrl, param)
+            setDetail(res)
+            const {productReplyEntitys = {}} = res
+            const {content = []} = productReplyEntitys
+            setHasMore(content.length === 10)
+            if (content.length === 10) {
+                setPage(page + 1)
+            }
+            if (loadMores) {
+                setReply(reply.concat(content))
+            } else {
+                setReply(content)
             }
         } catch (e) {
             console.log(e)

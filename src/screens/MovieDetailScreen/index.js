@@ -22,7 +22,6 @@ import StillPart from './components/MovieDetail/StillPart'
 import CommentPart from './components/MovieDetail/Comment'
 import Topic from './components/MovieDetail/Topic'
 import MovieCard from '../../common/MovieCard'
-import {bizstream} from '../../bizstream'
 import {tools} from '../../utils'
 import Video from './components/video'
 import httpConfig from "../../api/httpConfig";
@@ -118,30 +117,7 @@ const MovieDetail = (
     }
 
     const clickLike = async (data) => {
-        if (!isLogin) {
-            return navigation.navigate('MyModal', {screen: 'LoginScreen'})
-        }
-        try {
-            setLikeLoading(true)
-            const {id} = data
-            // const likeId = data.myLike === null ? null : data.myLike.id
-            const productLike = data.productLike === '1' ? '0' : '1'
-            const likeCnt = productLike === '0' ? data.likeCnt - 1 : data.likeCnt + 1
-            const res = await bizstream.customer.clickLike(productLike, id, '1', thatCd)
-            console.log(res)
-            if (res.code === 200) {
-                setDetail(Object.assign(detail, {productLike, likeCnt}))
-                // getDetail()
-                tools.Toast.toast(productLike === '1' ? '已加入想看' : '已取消想看', 1)
-            } else {
-                tools.Toast.toast('想看功能维护中稍后再试！', 1)
-            }
-        } catch (e) {
-            tools.Toast.toast('想看功能维护中稍后再试！', 1)
-        } finally {
-            setLikeLoading(false)
-        }
-        update()
+
     }
 
     const onTabClick = (index) => {
@@ -412,7 +388,7 @@ const renderMovieCard = (detail, clickLike) => {
                     intro={detail.description}
                     movieName={detail.productName}
                     source={detail.smallImageUrl}
-                    baseUrl={bizstream.getMediaUrl()}
+                    baseUrl={httpConfig.mediaUrl}
                     isDetail
                     labels={labels}
                     renderOtherInfo={() => (

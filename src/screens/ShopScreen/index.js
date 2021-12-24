@@ -136,8 +136,8 @@ const ShopScreen = ({
         return (
             <FlatList
                 data={list}
-                renderItem={({ item }) => <Banner key={item.id} item={item}/>}
-                ItemSeparatorComponent={() => <Holder height={10} />}
+                renderItem={({item}) => <Banner key={item.id} item={item}/>}
+                ItemSeparatorComponent={() => <Holder height={10}/>}
                 keyExtractor={(item) => item.id.toString()}
             />
         );
@@ -145,9 +145,9 @@ const ShopScreen = ({
 
     function Banner({item}) {
         return (
-            <View style={{height :250}}>
+            <View style={{height: 250}}>
                 <Image
-                    source={{ uri: httpConfig.mediaUrl + item?.advertImg }}
+                    source={{uri: httpConfig.mediaUrl + item?.advertImg}}
                     resizeMode="cover"
                     style={styles.bannerStyle}
                 />

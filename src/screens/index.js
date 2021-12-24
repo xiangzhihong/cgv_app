@@ -12,6 +12,7 @@ import PublishCommentScreen from "./CommentScreen/PublishCommentScreen";
 import PersonalCommentScreen from "./CommentScreen/PersonalCommentScreen";
 import AllTopicScreen from "./TopicScreen/AllTopicScreen";
 import PersonalTopicScreen from "./TopicScreen/PersonalTopicScreen";
+import FriendCardListScreen from "./FriendCardListScreen/FriendCardListScreen";
 
 export const stacks = [
     {
@@ -130,6 +131,17 @@ export const stacks = [
                         />
                     </TouchableOpacity>
                 ),
+            }
+        },
+    },
+    {
+        name: 'FriendCardListScreen',
+        component: FriendCardListScreen,
+        options: ({ route }) => {
+            const { params = {} } = route
+            const { title = '购买朋友卡' } = params
+            return {
+                title,
             }
         },
     },

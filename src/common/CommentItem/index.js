@@ -74,7 +74,7 @@ const CommentItem = (
                     <View style={{flexDirection: isReverse ? 'column-reverse' : 'column'}}>
                         <View>
                             {
-                                content ? <Text type="label"
+                                content ? <Text type="label" numberOfLines={3} ellipsizeMode={'tail'}
                                                 style={[styles.contentText, contentStyle]}>{content}</Text> : null
                             }
                             {

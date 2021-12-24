@@ -41,14 +41,7 @@ let commentY = 0
 let topicY = 0
 const scrollRef = React.createRef()
 
-const MovieDetail = (
-    {
-        route,
-        navigation,
-        thatCd,
-        commentPage,
-        isLogin,
-    }) => {
+const MovieDetail = ({route, navigation}) => {
     const {params = {}} = route
     const {movieId = {}, update, title} = params
     const [activeIndex, setActiveIndex] = useState(0)
@@ -56,7 +49,6 @@ const MovieDetail = (
     const [detail, setDetail] = useState({})
     const [movieComments, setMovieComments] = useState([])
     const [movieTopics, setMovieTopics] = useState([])
-    const [likeLoading, setLikeLoading] = useState(false)
     const [showVideo, setShowVideo] = useState(false)
 
     useEffect(() => {
@@ -197,7 +189,7 @@ const MovieDetail = (
     }
 
     const {productAttributes = [], productId, btnType, activity} = detail
-    const Buttontext = activity === '1' ? '特惠购票' : btnType === '2' ? '预售' : btnType === '3' ? '立即购票' : '敬请期待'
+    const buttonText = activity === '1' ? '特惠购票' : btnType === '2' ? '预售' : btnType === '3' ? '立即购票' : '敬请期待'
     const color = activity === '1' ? '#F1A23D' : btnType === '2' ? '#389AFC' : '#FC5869'
 
     function renderIntroView() {
@@ -306,7 +298,7 @@ const MovieDetail = (
 
                 </Animated.ScrollView>
             </View>
-            <Button title={Buttontext} onPress={() => {
+            <Button title={buttonText} onPress={() => {
                 if (btnType > 1) {
                     goPage('MovieAndCinemaScreen', {
                         prMovCd: productId,

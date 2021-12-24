@@ -1,7 +1,7 @@
 import {
     StyleSheet,
     Text,
-    ScrollView, RefreshControl,
+    ScrollView, RefreshControl, View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import HomeBanner from './HomeBanner';
@@ -87,13 +87,22 @@ function MovieScreen() {
         navigate('MovieDetailScreen', { ...params})
     }
 
+    function renderBanner() {
+        if(list.length>0){
+            return (
+                <HomeBanner list={list}/>
+            )
+        }
+        return(<View/>);
+    }
+
     return (
         <ScrollView style={styles.contain}
                     ref={e => scrollRef = e}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()}/>
                     }>
-            <HomeBanner list={list}/>
+            {renderBanner()}
             <HotMovieContainer hotMovies={hotData} onViewAll={() => onViewAll()} onItemPress={onItemPress}/>
             <SoonMovieContainer
                 soonMovies={soonData}

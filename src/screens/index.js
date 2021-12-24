@@ -13,6 +13,7 @@ import PersonalCommentScreen from "./CommentScreen/PersonalCommentScreen";
 import AllTopicScreen from "./TopicScreen/AllTopicScreen";
 import PersonalTopicScreen from "./TopicScreen/PersonalTopicScreen";
 import FriendCardListScreen from "./FriendCardListScreen/FriendCardListScreen";
+import MovieShareScreen from "./MovieShareScreen";
 
 export const stacks = [
     {
@@ -219,6 +220,22 @@ export const stacks = [
                         />
                     </TouchableOpacity>
                 ),
+            }
+        },
+    },
+    {
+        name: 'MovieShareScreen',
+        component: MovieShareScreen,
+        options: (nav) => {
+            const { route } = nav
+            const { params = {} } = route
+            const { title = '分享XXX', type } = params
+            const targetTitle =
+                type === 'movie' || type === 'report'
+                    ? `分享${title}`
+                    : `分享${title}的电影评论`
+            return {
+                title: targetTitle,
             }
         },
     },

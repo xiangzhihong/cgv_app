@@ -22,7 +22,7 @@ const CircleClick = (
   const textInactiveTintColor = textInactiveColor ? textInactiveColor : '#999999'
   return (
     <Container style={[styles.circle, style,  {backgroundColor: isActive ? backgroundActiveColor : backgroundInactiveColor}]} activeOpacity={onPress ? 0.7 : 1} >
-      <Text type={'intro'} style={[textStyle, {color: isActive ? textActiveTintColor : textInactiveTintColor }]} >{text}</Text>
+      <Text style={[textStyle, {color: isActive ? textActiveTintColor : textInactiveTintColor}]} >{text}</Text>
     </Container>
   )
 }

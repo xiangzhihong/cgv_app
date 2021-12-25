@@ -67,11 +67,9 @@ const styles = StyleSheet.create({
   leftContainer: {
     flex: 1
   },
-
   rightContainer: {
     justifyContent: 'center'
   },
-
   labelContainer: {
     flexDirection: 'row',
     alignItems: 'center',

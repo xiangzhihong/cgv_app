@@ -240,10 +240,6 @@ const prompt = (
 };
 
 const alertShare = (
-  // title = '温馨提示',
-  // content = '为确保账号正常使用\n请完善您的生日信息',
-  // buttons = [],
-  // options = {},
   onItemPress,
   onCancel,
   title = '分享给好友',

@@ -14,6 +14,7 @@ import AllTopicScreen from "./TopicScreen/AllTopicScreen";
 import PersonalTopicScreen from "./TopicScreen/PersonalTopicScreen";
 import FriendCardListScreen from "./FriendCardListScreen/FriendCardListScreen";
 import MovieShareScreen from "./MovieShareScreen";
+import MovieAndCinemaScreen from "./MovieAndCinemaScreen";
 
 export const stacks = [
     {
@@ -239,6 +240,17 @@ export const stacks = [
             }
         },
     },
+    {
+        name: 'MovieAndCinemaScreen',
+        component: MovieAndCinemaScreen,
+        options: ({ route }) => {
+            const { params = {} } = route
+            const { title = '误杀' } = params
+            return {
+                title,
+            }
+        },
+    }
 ];
 
 const styles = StyleSheet.create({

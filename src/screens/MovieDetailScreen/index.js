@@ -49,6 +49,7 @@ const MovieDetail = ({route, navigation}) => {
     const [detail, setDetail] = useState({})
     const [movieComments, setMovieComments] = useState([])
     const [movieTopics, setMovieTopics] = useState([])
+    const [likeLoading, setLikeLoading] = useState(false)
     const [showVideo, setShowVideo] = useState(false)
 
     useEffect(() => {

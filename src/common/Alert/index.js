@@ -10,6 +10,7 @@ import * as React from 'react';
 import Container from './AlertContainer';
 import AlertInput from './AlertInput';
 import AlertPanel from './AlertPanel';
+import SharePanel from './SharePanel';
 import {goBack} from '../../utils/rootNavigation';
 
 const Alert = ({
@@ -124,7 +125,6 @@ const Button = ({buttons, submitText, close}) => {
   );
 };
 
-export {Alert, AlertInput, AlertPanel};
 
 const styles = StyleSheet.create({
   container: {
@@ -178,3 +178,5 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 });
+
+export {Alert, AlertInput, AlertPanel,SharePanel};

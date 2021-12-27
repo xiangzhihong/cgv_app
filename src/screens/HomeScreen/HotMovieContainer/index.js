@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import HomeMovieItem from '../components/HomeMovieItem';
 import baseConfig from '../../../api/httpConfig';
 
-const HotMovieContainer = ({hotMovies, onViewAll, onItemPress, onGotoBuy}) => {
+const HotMovieContainer = ({hotMovies, onViewAll, onItemPress, onGoBuy}) => {
   const {datas = [], pages = 1, total = 0} = hotMovies;
 
   const renderHotMovieItem = ({item, index}) => {
@@ -37,7 +37,7 @@ const HotMovieContainer = ({hotMovies, onViewAll, onItemPress, onGotoBuy}) => {
         movieFormat={null}
         tag="onSell"
         onPress={onItemPress}
-        onGotoBuy={() => onGotoBuy(item.movCd, item.productName)}
+        onGotoBuy={() => onGoBuy(item.movCd, item.productName)}
         actionType="goupiao"
         onClickFavorite={null}
       />

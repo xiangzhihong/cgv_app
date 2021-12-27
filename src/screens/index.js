@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, TouchableOpacity, Text,Image, StyleSheet, Platform} from 'react-native';
+import {View, TouchableOpacity, Text, Image, StyleSheet, Platform} from 'react-native';
 import AllMovieScreen from '../screens/AllMovieScreen/AllSellMovieScreen';
 import CitySelectScreen from "./CitySelectScreen";
 import PromotionDetailScreen from "./PromotionDetailScreen/PromotionDetailScreen";
@@ -15,6 +15,7 @@ import PersonalTopicScreen from "./TopicScreen/PersonalTopicScreen";
 import FriendCardListScreen from "./FriendCardListScreen/FriendCardListScreen";
 import MovieShareScreen from "./MovieShareScreen";
 import MovieAndCinemaScreen from "./MovieAndCinemaScreen";
+import SelectSessionScreen from "./SelectSessionScreen";
 
 export const stacks = [
     {
@@ -87,9 +88,9 @@ export const stacks = [
         name: 'AllCommentScreen',
         component: AllCommentScreen,
         options: (nav) => {
-            const { route, navigation } = nav
-            const { params = {} } = route
-            const { title = 'XX的电影评论', movieId, status, detail } = params
+            const {route, navigation} = nav
+            const {params = {}} = route
+            const {title = 'XX的电影评论', movieId, status, detail} = params
             return {
                 title: status === 2 ? `${title}的评价` : `${title}的电影评论`,
                 headerTitleStyle: {
@@ -98,10 +99,10 @@ export const stacks = [
                 headerRight: () =>
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('PublishCommentScreen', { title, movieId })
+                            navigation.navigate('PublishCommentScreen', {title, movieId})
                         }}
                         activeOpacity={0.8}
-                        style={{ marginRight: 10 }}>
+                        style={{marginRight: 10}}>
                         <Text>发表评论</Text>
                     </TouchableOpacity>,
             }
@@ -110,9 +111,9 @@ export const stacks = [
     {
         name: 'PersonalCommentScreen',
         component: PersonalCommentScreen,
-        options: ({ route, navigation }) => {
-            const { params = {} } = route
-            const { title = 'XX的电影评论', images, productReview, status } = params
+        options: ({route, navigation}) => {
+            const {params = {}} = route
+            const {title = 'XX的电影评论', images, productReview, status} = params
             return {
                 title: status === 2 ? `${title}的评价` : `${title}的电影评论`,
                 headerRight: () => (
@@ -126,10 +127,10 @@ export const stacks = [
                             })
                         }}
                         activeOpacity={0.8}
-                        style={{ marginRight: 15 }}>
+                        style={{marginRight: 15}}>
                         <Image
                             source={require('../assets/images/movie/share_black.png')}
-                            style={{ width: 16, height: 16 }}
+                            style={{width: 16, height: 16}}
                         />
                     </TouchableOpacity>
                 ),
@@ -139,9 +140,9 @@ export const stacks = [
     {
         name: 'FriendCardListScreen',
         component: FriendCardListScreen,
-        options: ({ route }) => {
-            const { params = {} } = route
-            const { title = '购买朋友卡' } = params
+        options: ({route}) => {
+            const {params = {}} = route
+            const {title = '购买朋友卡'} = params
             return {
                 title,
             }
@@ -151,9 +152,9 @@ export const stacks = [
         name: 'PublishCommentScreen',
         component: PublishCommentScreen,
         options: (nav) => {
-            const { route, navigation } = nav
-            const { params = {} } = route
-            const { title = '电影名称', rightPress } = params
+            const {route, navigation} = nav
+            const {params = {}} = route
+            const {title = '电影名称', rightPress} = params
             return {
                 title,
                 headerRight: () => (
@@ -175,8 +176,8 @@ export const stacks = [
                             navigation.goBack()
                         }}
                         activeOpacity={0.8}
-                        style={{ marginLeft: 10 }}>
-                        <Text style={{ fontFamily: Platform.OS === 'ios' ? null : '' }}>
+                        style={{marginLeft: 10}}>
+                        <Text style={{fontFamily: Platform.OS === 'ios' ? null : ''}}>
                             取消
                         </Text>
                     </TouchableOpacity>
@@ -187,9 +188,9 @@ export const stacks = [
     {
         name: 'AllTopicScreen',
         component: AllTopicScreen,
-        options: ({ route }) => {
-            const { params = {} } = route
-            const { title = 'XX的话题' } = params
+        options: ({route}) => {
+            const {params = {}} = route
+            const {title = 'XX的话题'} = params
             return {
                 title: `${title}的话题`,
             }
@@ -198,9 +199,9 @@ export const stacks = [
     {
         name: 'PersonalTopicScreen',
         component: PersonalTopicScreen,
-        options: ({ route, navigation }) => {
-            const { params = {} } = route
-            const { title = 'XX的话题讨论', images, description } = params
+        options: ({route, navigation}) => {
+            const {params = {}} = route
+            const {title = 'XX的话题讨论', images, description} = params
             return {
                 title: '话题讨论',
                 headerRight: () => (
@@ -214,10 +215,10 @@ export const stacks = [
                             })
                         }}
                         activeOpacity={0.8}
-                        style={{ marginRight: 15 }}>
+                        style={{marginRight: 15}}>
                         <Image
                             source={require('../assets/images/movie/share_black.png')}
-                            style={{ width: 16, height: 16 }}
+                            style={{width: 16, height: 16}}
                         />
                     </TouchableOpacity>
                 ),
@@ -228,9 +229,9 @@ export const stacks = [
         name: 'MovieShareScreen',
         component: MovieShareScreen,
         options: (nav) => {
-            const { route } = nav
-            const { params = {} } = route
-            const { title = '分享XXX', type } = params
+            const {route} = nav
+            const {params = {}} = route
+            const {title = '分享XXX', type} = params
             const targetTitle =
                 type === 'movie' || type === 'report'
                     ? `分享${title}`
@@ -243,14 +244,19 @@ export const stacks = [
     {
         name: 'MovieAndCinemaScreen',
         component: MovieAndCinemaScreen,
-        options: ({ route }) => {
-            const { params = {} } = route
-            const { title = '误杀' } = params
+        options: ({route}) => {
+            const {params = {}} = route
+            const {title = '误杀'} = params
             return {
                 title,
             }
         },
-    }
+    },
+    {
+        name: 'SelectSessionScreen',
+        component: SelectSessionScreen,
+        options: {title: '选择场次'},
+    },
 ];
 
 const styles = StyleSheet.create({

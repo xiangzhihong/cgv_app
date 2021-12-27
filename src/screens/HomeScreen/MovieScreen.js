@@ -87,6 +87,13 @@ function MovieScreen() {
         navigate('MovieDetailScreen', { ...params})
     }
 
+    const onGotoBuy = (prMovCd, title) => {
+        navigate('MovieAndCinemaScreen', {
+            prMovCd,
+            title,
+        })
+    }
+
     function renderBanner() {
         if(list.length>0){
             return (
@@ -103,7 +110,7 @@ function MovieScreen() {
                         <RefreshControl refreshing={refreshing} onRefresh={() => onRefresh()}/>
                     }>
             {renderBanner()}
-            <HotMovieContainer hotMovies={hotData} onViewAll={() => onViewAll()} onItemPress={onItemPress}/>
+            <HotMovieContainer hotMovies={hotData} onViewAll={() => onViewAll()} onItemPress={onItemPress} onGoBuy={onGotoBuy}/>
             <SoonMovieContainer
                 soonMovies={soonData}
                 onViewAll={() => onViewSoonAll()}

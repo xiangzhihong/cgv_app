@@ -387,7 +387,6 @@ export default bizstream => ({
   getFeaturedProducts: (facilityCd, pageSize) => {
     const data = {
       facilityCd,
-      // prodCatalogCd: '1201',
       showInSelect: '1',
       ishotgoods: 1,
       pageSize,

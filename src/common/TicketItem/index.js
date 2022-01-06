@@ -49,7 +49,7 @@ export default (
           </View>
           <View style={{ marginLeft: 20 }}>
             <Text type="label" style={{ color: '#222' }}>{desc}</Text>
-            <Text>{room}</Text>
+            <Text style={{maxWidth: 100,fontSize:12}}>{room}</Text>
           </View>
         </View>
 
@@ -61,10 +61,9 @@ export default (
             </View>
             {
               getPrice().baseprice > getPrice().cardprice && getPrice().cardprice > 0?
-
               <View style={[styles.infoContainer, { borderColor: '#F1A23D' }]}>
               <View style={[styles.info, { backgroundColor: '#F1A23D' }]}>
-                <Text style={{ color: '#fff'}}>E优卡</Text>
+                <Text style={{ color: '#fff',fontSize: 12}}>E优卡</Text>
               </View>
               <View  style={styles.info}>
                 <Text style={{ color: '#F1A23D' }}>￥{getPrice().cardprice}</Text>
@@ -72,11 +71,13 @@ export default (
             </View>
              :null
             }
-
           </View>
-          <Button onPress={() => {
+
+          <TouchableOpacity onPress={()=>{
             onPress(data, index)
-          }} title={buttonTitle} style={[styles.button, { backgroundColor: isDiscount ? '#F1A23D' : '#FC5869' }]} textStyle={{ fontSize: 13 }}/>
+          }}>
+            <Text style={[styles.button, {backgroundColor: isDiscount ? '#F1A23D' : '#FC5869' }]}> {buttonTitle} </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottomWidth: tools.minLineHeight(),
+    borderBottomWidth: 1,
     paddingVertical: 14,
   },
   row: {
@@ -102,7 +103,6 @@ const styles = StyleSheet.create({
   oldPrice: {
     textDecorationLine: 'line-through',
     color: '#ccc',
-    // textDecorationColor: 'red'
   },
   button: {
     padding: 0,
@@ -110,10 +110,11 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 12,
     marginHorizontal: 15,
+    color:'#fff'
   },
   infoContainer: {
     flexDirection: 'row',
-    borderWidth: tools.minLineHeight(),
+    borderWidth: 1,
     borderRadius: 2,
   },
   info: {

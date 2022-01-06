@@ -17,7 +17,7 @@ import SpliteLine from './components/SpliteLine'
 import ButtonListFooter from '../../common/ButtonListFooter/ButtonListFooter'
 import GoodItem from '../../common/GoodItem/GoodItem'
 import ShoppingCartBtn from './components/ShoppingCartBtn'
-import {bizstream} from '../../bizstream'
+// import {bizstream} from '../../bizstream'
 import {navigate, tools} from '../../utils'
 import Header from '../../common/Header/Header'
 import apiRequest from "../../api";
@@ -41,7 +41,7 @@ const ShopScreen = ({
     const [goodList, setGoodList] = useState([])
     const [total, setTotal] = useState([])
     const [list, setList] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
+    // const [isLoading, setIsLoading] = useState(false)
     const [showAlert, setShowAlert] = useState(false)
     global.type = null
 
@@ -59,22 +59,9 @@ const ShopScreen = ({
     }
 
     async function getFriendCard() {
-        const url = 'http://prd-api.cgv.com.cn/api/shop/card';
+        const url = '/api/shop/card';
         const res = await apiRequest.get(url);
         setFriendCards(res)
-    }
-
-    const findHasGoodsCoupon = async () => {
-        try {
-            const {code, data} = await bizstream.customer.findHasGoodsCoupon()
-            if (code === 200) {
-                if (data.data) {
-                    setShowAlert(true)
-                }
-            }
-        } catch (e) {
-            tools.Toast.toast('获取失败，请稍后再试！', 1)
-        }
     }
 
     const goPressTo = () => {
@@ -82,19 +69,21 @@ const ShopScreen = ({
     }
 
     const getGoodList = async () => {
-        let productCategoryTypeId = 2
-        try {
-            const res = await bizstream.admin.getFeaturedProducts(facilityId, productCategoryTypeId, goodList?.length + 10)
-            if (res.code === 200) {
-                const list = res?.data?.content?.length > 0 ? res?.data?.content[0]?.goodList : []
-                setGoodList(list)
-                setTotal(res.data.totalPages)
-            } else {
-                throw new Error(res)
-            }
-        } catch (e) {
-            console.log(e)
+        let url = '/product/good/list-all'
+        //facilityId: facilityId
+        let param = {
+            facilityCd: 188,
+            showInSelect: '1',
+            ishotgoods: 1,
+            pageSize: goodList?.length + 10
+        };
+        const res = await apiRequest.post(url,param)
+        if(res!=null){
+            const list = res.content.length > 0 ? res.content[0].goodList : []
+            setGoodList(list)
+            setTotal(res.totalPages)
         }
+        console.log('getGoodList: '+goodList)
     }
 
     const LeftView = ({cinmaName = '上海大宁电影城', onHeaderLeftPress}) => {
@@ -171,17 +160,11 @@ const ShopScreen = ({
                 }
                 refreshControl={
                     <RefreshControl
-                        refreshing={isLoading}
+                        refreshing={false}
                         onRefresh={() => {
-                            setIsLoading(true)
                             getFriendCard()
                             getGoodList()
-                            findHasGoodsCoupon()
-                            setTimeout(() => {
-                                setIsLoading(false)
-                            }, 500)
                         }}
-
                     />
                 }
                 ItemSeparatorComponent={() => <SpliteLine/>}

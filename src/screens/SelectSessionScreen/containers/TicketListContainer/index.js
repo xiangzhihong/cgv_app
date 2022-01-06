@@ -1,7 +1,6 @@
 import React from 'react'
 import {View} from 'react-native'
 import TicketItem from '../../../../common/TicketItem'
-import Empty from '../../../../common/Empty'
 
 export default (
     {

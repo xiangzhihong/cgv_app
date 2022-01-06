@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {View, TouchableOpacity, Text, Image, StyleSheet, Platform} from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo'
 import AllMovieScreen from '../screens/AllMovieScreen/AllSellMovieScreen';
 import CitySelectScreen from "./CitySelectScreen";
 import PromotionDetailScreen from "./PromotionDetailScreen/PromotionDetailScreen";
@@ -16,6 +17,9 @@ import FriendCardListScreen from "./FriendCardListScreen/FriendCardListScreen";
 import MovieShareScreen from "./MovieShareScreen";
 import MovieAndCinemaScreen from "./MovieAndCinemaScreen";
 import SelectSessionScreen from "./SelectSessionScreen";
+import CinemaDetailScreenPic from "./CinemaDetailScreen/CinemaDetailScreenPic";
+import CinemaDetailScreen from "./CinemaDetailScreen";
+import GoodListScreen from "./GoodListScreen";
 
 export const stacks = [
     {
@@ -256,6 +260,44 @@ export const stacks = [
         name: 'SelectSessionScreen',
         component: SelectSessionScreen,
         options: {title: '选择场次'},
+    },
+    {
+        name: 'CinemaDetailScreen',
+        component: CinemaDetailScreen,
+        options: {title: '影院详情'},
+    },
+    {
+        name: 'CinemaDetailScreenPic',
+        component: CinemaDetailScreenPic,
+        options: (nav) => {
+            const {route} = nav
+            const {params = {}} = route
+            const {title = ''} = params
+            return {
+                title,
+            }
+        },
+    },
+    {
+        name: 'GoodListScreen',
+        component: GoodListScreen,
+        options: ({navigation, route}) => {
+            const {params = {}} = route
+            const {update, type} = params
+            return {
+                title: '商品列表',
+                headerLeft: () => (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            navigation.goBack()
+                        }}
+                        style={{paddingLeft: 10}}>
+                        <Icon name="chevron-thin-left" size={20}/>
+                    </TouchableOpacity>
+                ),
+            }
+        },
     },
 ];
 

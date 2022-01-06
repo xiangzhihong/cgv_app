@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import {View, StyleSheet} from 'react-native'
-// import commonStyle from '../../../common/commonStyles'
 
 class SpliteLine extends PureComponent {
   render () {

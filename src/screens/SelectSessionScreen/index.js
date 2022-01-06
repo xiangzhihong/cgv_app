@@ -287,7 +287,8 @@ const SelectSessionScreen = (
 
     return (
         <ScrollView style={{backgroundColor: '#fff'}}>
-            {movies && movies?.length < 1 ? <View style={{flex: 1}}><Empty/></View> :
+            {/*<View style={{flex: 1}}><Empty/></View> */}
+            {movies &&
                 <View>
                     <TopAddress data={route.params} addrTextType="body"
                                 onItemPress={() => navigation.navigate('CinemaDetailScreen', params)}/>

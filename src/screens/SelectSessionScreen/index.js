@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {View, TouchableOpacity, Text, Image, Dimensions, StyleSheet, ScrollView} from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 import TipCard from '../../common/TipCard'
@@ -34,7 +34,7 @@ const SelectSessionScreen = (
     const [activeIndex, setActiveIndex] = React.useState(movieActiveIndex)
     const [advertData, setAdvertData] = React.useState('LOADING')
 
-    React.useEffect(() => {
+    useEffect(() => {
         getMoviesByCinema()
         getAdvert()
         seatCountPos()

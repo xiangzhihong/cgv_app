@@ -40,10 +40,10 @@ const styles = StyleSheet.create({
     },
     balanceAccounts: {
         fontSize: 15,
-        backgroundColor: '#fff'
+        color: '#fff'
     },
     total: {
-        backgroundColor: '#FC5869',
+        color: '#FC5869',
         fontSize: 11,
         fontFamily: Platform.OS === 'ios' ? null : ''
     },

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { View, TouchableOpacity, StyleSheet,Image, Text, Dimensions } from 'react-native'
 import Swiper from 'react-native-swiper'
 import { FlatList } from 'react-native-gesture-handler'
-import { bizstream } from '../../bizstream'
+// import { bizstream } from '../../bizstream'
 import { AD_BANNER_TYPES } from '../../constants'
 import Holder from '../Holder'
 import { navigate } from '../../utils'
+import httpConfig from "../../api/httpConfig";
+import apiRequest from "../../api";
 const { width } = Dimensions.get('window')
 
 const TARGET_SCREEN_TYPE = {
@@ -57,12 +59,10 @@ const AdvertisingBanner = ({ thatCd, len, isLoggedIn, type, navigation }) => {
   }, [])
 
   const getBannerList = async () => {
-    try {
-      const data = await bizstream.admin.getBannerList(type, thatCd)
-      setList(data || [])
-    } catch (error) {
-      console.log(error)
-    }
+    // http://prd-api.cgv.com.cn/content/api/advert/query?channel=APP&advertType=APP_SY_HEAD_AD&thatCd=1051
+    let url = '/content/api/advert/query?channel=APP&advertType='+type+'&thatCd='+thatCd
+    const res = await apiRequest.get(url)
+    setList(res || [])
   }
 
   const Banner = ({ item, height, style, onPress }) => {
@@ -70,7 +70,7 @@ const AdvertisingBanner = ({ thatCd, len, isLoggedIn, type, navigation }) => {
     return (
       <Continer onPress={onPress}>
         <Image
-          source={{ uri: bizstream.getMediaUrl() + item?.advertImg }}
+          source={{ uri: httpConfig.mediaUrl + item?.advertImg }}
           resizeMode="cover"
           style={[{ height }, style]}
         />
@@ -82,7 +82,6 @@ const AdvertisingBanner = ({ thatCd, len, isLoggedIn, type, navigation }) => {
 
   const onPressBanner = (linkObjectInfo = '') => {
     const info = linkObjectInfo.split('||')
-    console.log(info, "√√√infoinfoinfoinfoinfoinfoinfo")
     const first = info[0]
     const second = info[1] || ''
     const { IntegralMall, MovieDetail, Topic, PromotionDetail, Game, AboutCGV, GoodsDetail } = TARGET_SCREEN_TYPE

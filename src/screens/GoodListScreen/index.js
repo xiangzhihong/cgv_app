@@ -25,9 +25,6 @@ const GoodListScreen = ({
     let currentCategoryName
     const sectionListEle = useRef(null)
     const {params} = route
-    const {update, type} = params
-    // const {selectedCinema} = state
-
     const [goods, setGoods] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -39,22 +36,12 @@ const GoodListScreen = ({
     }
 
     useEffect(() => {
-        return getFun
-    }, [])
-
-    const getFun = () => {
-        if (type === 'movie') {
-            getResult()
-        }
-    }
-
-    useEffect(() => {
         getGoodCategory()
+        // getResult()
     }, [])
 
     async function getGoodCategory() {
         let url = '/product/good/list-all'
-        //facilityCd: selectedCinema?.facilityId
         let param = {
             facilityCd: 188,
             prodCatalogCd: 1201,
@@ -62,14 +49,14 @@ const GoodListScreen = ({
         };
         const data = await apiRequest.post(url,param)
         console.log('getCinemaDetail: ' + data)
-        // setGoods(
-        //     (data.content).map(({goodList, ...res}, index) => ({
-        //         ...res,
-        //         isHot: index === 0,
-        //         data: goodList,
-        //     })),
-        // )
-        setGoods(data.content)
+        setGoods(
+            (data.content).map(({goodList, ...res}, index) => ({
+                ...res,
+                isHot: index === 0,
+                data: goodList,
+            })),
+        )
+        // setGoods(data.content)
         console.log('getCinemaDetail: ' + goods.toString())
     }
 
@@ -124,30 +111,6 @@ const GoodListScreen = ({
                 prodcutList.push(o)
             }
         })
-
-        // const obj = {
-        //     buyOrderStatus: true,
-        //     disSale: 'N',
-        //     isMiniProgram: false,
-        //     ordChn: 1,
-        //     prods: prodcutList,
-        //     sarftThatCd: selectedCinema.sarftThatCd,
-        //     srmCd: selectedCinema.srmCd,
-        //     thatAddr: selectedCinema.thatAddr,
-        //     thatCd: selectedCinema.thatCd,
-        //     thatId: selectedCinema.facilityId,
-        //     thatName: selectedCinema.thatNm,
-        //     thatParty: selectedCinema.partyId,
-        //     cinema: {
-        //         hqCode: selectedCinema.thatCd, // 本部影院代码
-        //         sarftCode: selectedCinema.sarftThatCd, // 广电总局影院代码
-        //         onlineCode: selectedCinema.facilityId, // 线上系统影院代码
-        //         srmCode: selectedCinema.srmCd, // 本部渠道代码
-        //         partyId: selectedCinema.partyId, // 影院party代码
-        //         name: selectedCinema.thatNm, // 影院名称
-        //         address: selectedCinema.thatAddr, // 影院地址
-        //     },
-        // }
 
         if (items.length < 1) {
             tools.alert('购物车不能为空！', '', [
@@ -216,69 +179,73 @@ const GoodListScreen = ({
         })
     }
 
-    return (
-        <View style={{flexDirection:'column'}}>
-            {/*<AdvertisingBanner type={AD_BANNER_TYPES.GOOD_LIST}/>*/}
-            <View style={styles.body}>
-                <View style={styles.leftList}>
-                    <FlatList
-                        data={goods}
-                        renderItem={({item, index}) => (
-                            <Menu
-                                item={item}
-                                isHot={index === 0}
-                                isSelected={index === selectedIndex}
-                                select={() => select(index)}
-                            />
-                        )}
-                        keyExtractor={(item) => item.id}
+    function renderShopCart() {
+        return (<ShoppingCartBar
+            style={{height:60}}
+            amount={cartTotalAmount}
+            num={cartTotalQuantity}
+            onPressLeft={() => navigate('MyModal', {screen: 'ShopingCartScreen'})}
+            onPressRight={() => {
+                if (type === 'movie') {
+                    getResult()
+                    goBack()
+                } else {
+                    createGoodOrder()
+                }
+            }}
+        />);
+    }
+
+    function renderLeftList() {
+        return (<View style={styles.leftList}>
+            <FlatList
+                data={goods}
+                renderItem={({item, index}) => (
+                    <Menu
+                        item={item}
+                        isHot={index === 0}
+                        isSelected={index === selectedIndex}
+                        select={() => select(index)}
                     />
-                </View>
-                <SectionList
-                    style={styles.rightList}
-                    ref={sectionListEle}
-                    onScrollToIndexFailed={() => ({
-                        index: selectedIndex,
-                        highestMeasuredFrameIndex: 0,
-                        averageItemLength: 100,
-                    })}
-                    renderSectionHeader={({section: {description, isHot}}) => (
-                        <View style={styles.title}>
-                            <HotTitle title={description} isHot={isHot}/>
-                        </View>
-                    )}
-                    sections={goods}
-                    renderItem={({item}) => (
-                        <GoodItem addOrder={() => {
-                        }} type={type} goBackRefresh={() => getGoodCategory()} item={item}/>
-                    )}
-                    keyExtractor={(item) => item.id}
-                    onViewableItemsChanged={onViewableItemsChanged}
-                />
-            </View>
-            <ShoppingCartBar
-                amount={cartTotalAmount}
-                num={cartTotalQuantity}
-                onPressLeft={() => navigate('MyModal', {screen: 'ShopingCartScreen'})}
-                onPressRight={() => {
-                    if (type === 'movie') {
-                        getResult()
-                        goBack()
-                    } else {
-                        createGoodOrder()
-                    }
-                }}
+                )}
+                keyExtractor={(item) => item.id}
             />
+        </View>);
+    }
+
+    function renderRightList() {
+        return (<SectionList
+            style={styles.rightList}
+            ref={sectionListEle}
+            onScrollToIndexFailed={() => ({
+                index: selectedIndex,
+                highestMeasuredFrameIndex: 0,
+                averageItemLength: 100,
+            })}
+            sections={goods}
+            renderItem={({item}) => (
+                <GoodItem  item={item}/>
+            )}
+            keyExtractor={(item) => item.id}
+            onViewableItemsChanged={onViewableItemsChanged}
+        />);
+    }
+
+    return goods.length>0 && (
+        <View style={{flexDirection:'column', flex:1}}>
+            <View style={styles.body}>
+                {renderLeftList()}
+                {renderRightList()}
+            </View>
+            {renderShopCart()}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-
     body: {
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: 'green'
     },
     leftList: {
         width: 72,

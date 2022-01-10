@@ -17,8 +17,6 @@ import SpliteLine from './components/SpliteLine'
 import ButtonListFooter from '../../common/ButtonListFooter/ButtonListFooter'
 import GoodItem from '../../common/GoodItem/GoodItem'
 import ShoppingCartBtn from './components/ShoppingCartBtn'
-// import {bizstream} from '../../bizstream'
-import {navigate, tools} from '../../utils'
 import Header from '../../common/Header/Header'
 import apiRequest from "../../api";
 import httpConfig from "../../api/httpConfig";
@@ -41,7 +39,6 @@ const ShopScreen = ({
     const [goodList, setGoodList] = useState([])
     const [total, setTotal] = useState([])
     const [list, setList] = useState([])
-    // const [isLoading, setIsLoading] = useState(false)
     const [showAlert, setShowAlert] = useState(false)
     global.type = null
 
@@ -77,13 +74,13 @@ const ShopScreen = ({
             ishotgoods: 1,
             pageSize: goodList?.length + 10
         };
-        const res = await apiRequest.post(url,param)
-        if(res!=null){
+        const res = await apiRequest.post(url, param)
+        if (res != null) {
             const list = res.content.length > 0 ? res.content[0].goodList : []
             setGoodList(list)
             setTotal(res.totalPages)
         }
-        console.log('getGoodList: '+goodList)
+        console.log('getGoodList: ' + goodList)
     }
 
     const LeftView = ({cinmaName = '上海大宁电影城', onHeaderLeftPress}) => {
@@ -144,6 +141,58 @@ const ShopScreen = ({
         )
     }
 
+    function renderModel() {
+        return (<Modal
+            animationType="fade"
+            transparent
+            visible={showAlert}
+        >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Image
+                        style={{marginTop: -(width - 100) * 0.57, width: width - 100, height: (width - 100) * 0.57}}
+                        source={require('../../assets/images/common/piao.png')}/>
+                    <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
+                    </View>
+                    <Text type="subheading"
+                          style={{marginTop: 20, marginBottom: 15, fontSize: 20, fontWeight: 'bold'}}>温馨提示</Text>
+                    <Text type="label" style={{
+                        fontSize: 16,
+                        color: '#5e5e5e',
+                        width: '60%',
+                        textAlign: 'center',
+                        lineHeight: 20,
+                    }}>您有尚未使用的优惠券记得用哦～</Text>
+                    <View
+                        style={{flexDirection: 'row', borderTopColor: '#e5e5e5', borderTopWidth: 1, marginTop: 25}}>
+                        <TouchableOpacity onPress={() => setShowAlert(false)} style={{
+                            width: '50%',
+                            alignItems: 'center',
+                            borderRightColor: '#e5e5e5',
+                            borderRightWidth: 1,
+                            justifyContent: 'center',
+                            height: 45,
+                        }}>
+                            <Text style={{fontSize: 15}}>先不用了</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setShowAlert(false)
+                                if (!isLoggedIn) {
+                                    navigate('MyModal', {screen: 'LoginScreen'})
+                                } else {
+                                    navigate('MyTicketsScreen')
+                                }
+                            }}
+                            style={{width: '50%', alignItems: 'center', justifyContent: 'center', height: 50}}>
+                            <Text style={{fontSize: 15, color: '#FC5869'}}>去看看</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </Modal>);
+    }
+
     return (
         <View>
             <Header title="商店" renderLeftView={() => <LeftView onHeaderLeftPress={onHeaderLeftPress}/>}/>
@@ -180,55 +229,7 @@ const ShopScreen = ({
                 global.type = null
                 navigate('MyModal', {screen: 'ShopingCartScreen'})
             }}/>
-            <Modal
-                animationType="fade"
-                transparent
-                visible={showAlert}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Image
-                            style={{marginTop: -(width - 100) * 0.57, width: width - 100, height: (width - 100) * 0.57}}
-                            source={require('../../assets/images/common/piao.png')}/>
-                        <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
-                        </View>
-                        <Text type="subheading"
-                              style={{marginTop: 20, marginBottom: 15, fontSize: 20, fontWeight: 'bold'}}>温馨提示</Text>
-                        <Text type="label" style={{
-                            fontSize: 16,
-                            color: '#5e5e5e',
-                            width: '60%',
-                            textAlign: 'center',
-                            lineHeight: 20,
-                        }}>您有尚未使用的优惠券记得用哦～</Text>
-                        <View
-                            style={{flexDirection: 'row', borderTopColor: '#e5e5e5', borderTopWidth: 1, marginTop: 25}}>
-                            <TouchableOpacity onPress={() => setShowAlert(false)} style={{
-                                width: '50%',
-                                alignItems: 'center',
-                                borderRightColor: '#e5e5e5',
-                                borderRightWidth: 1,
-                                justifyContent: 'center',
-                                height: 45,
-                            }}>
-                                <Text style={{fontSize: 15}}>先不用了</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setShowAlert(false)
-                                    if (!isLoggedIn) {
-                                        navigate('MyModal', {screen: 'LoginScreen'})
-                                    } else {
-                                        navigate('MyTicketsScreen')
-                                    }
-                                }}
-                                style={{width: '50%', alignItems: 'center', justifyContent: 'center', height: 50}}>
-                                <Text style={{fontSize: 15, color: '#FC5869'}}>去看看</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            {renderModel()}
         </View>
     )
 }
@@ -272,7 +273,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.2)',
     },
     modalView: {
-        margin: 50,
+        margin: 70,
         backgroundColor: 'white',
         borderRadius: 6,
         alignItems: 'center',

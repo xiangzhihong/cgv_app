@@ -28,7 +28,7 @@ const ShoppingCartBtn = ({ count, onPress }) => {
 const styles = StyleSheet.create({
   btn: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 40,
     right: 0,
     width: 76,
     height: 60,

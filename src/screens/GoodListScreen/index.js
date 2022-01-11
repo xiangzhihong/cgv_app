@@ -1,9 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {StyleSheet, SectionList, FlatList, View} from 'react-native'
-import AdvertisingBanner from '../../common/AdvertisingBanner/AdvertisingBanner'
 import ShoppingCartBar from './components/ShoppingCartBar'
 import GoodItem from '../../common/GoodItem/GoodItem'
-import HotTitle from './components/HotTitle'
 import Menu from './components/Menu'
 import {AD_BANNER_TYPES} from '../../constants'
 import {AESUtils, tools} from '../../utils'
@@ -37,7 +35,6 @@ const GoodListScreen = ({
 
     useEffect(() => {
         getGoodCategory()
-        // getResult()
     }, [])
 
     async function getGoodCategory() {
@@ -48,7 +45,6 @@ const GoodListScreen = ({
             showInSelect: '1',
         };
         const data = await apiRequest.post(url,param)
-        console.log('getCinemaDetail: ' + data)
         setGoods(
             (data.content).map(({goodList, ...res}, index) => ({
                 ...res,
@@ -57,7 +53,6 @@ const GoodListScreen = ({
             })),
         )
         // setGoods(data.content)
-        console.log('getCinemaDetail: ' + goods.toString())
     }
 
     const scrollTo = (index) => {
@@ -118,7 +113,6 @@ const GoodListScreen = ({
                     text: '确定',
                     onPress: () => {
                         goBack()
-                        // global.siblingAlert.destroy()
                     },
                 },
             ])
@@ -128,7 +122,7 @@ const GoodListScreen = ({
         }
     }
 
-    const getResult = () => {
+    function getResult(){
         let prodcutList = []
         items.map((data) => {
             let o = {}

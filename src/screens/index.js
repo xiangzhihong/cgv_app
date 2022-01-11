@@ -20,6 +20,7 @@ import SelectSessionScreen from "./SelectSessionScreen";
 import CinemaDetailScreenPic from "./CinemaDetailScreen/CinemaDetailScreenPic";
 import CinemaDetailScreen from "./CinemaDetailScreen";
 import GoodListScreen from "./GoodListScreen";
+import GoodDetailScreen from "./GoodDetailScreen";
 
 export const stacks = [
     {
@@ -286,6 +287,27 @@ export const stacks = [
             const {update, type} = params
             return {
                 title: '商品列表',
+                headerLeft: () => (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            navigation.goBack()
+                        }}
+                        style={{paddingLeft: 10}}>
+                        <Icon name="chevron-thin-left" size={20}/>
+                    </TouchableOpacity>
+                ),
+            }
+        },
+    },
+    {
+        name: 'GoodDetailScreen',
+        component: GoodDetailScreen,
+        options: ({navigation, route}) => {
+            const {params = {}} = route
+            const {title = '商品详情', update, type} = params
+            return {
+                title,
                 headerLeft: () => (
                     <TouchableOpacity
                         activeOpacity={0.8}

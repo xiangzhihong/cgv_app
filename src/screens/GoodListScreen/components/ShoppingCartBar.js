@@ -18,7 +18,7 @@ const ShoppingCartBar = ({ amount = '0.0', num = 0, onPressLeft = () => {}, onPr
 
 const styles = StyleSheet.create({
     bar: {
-        height: 48,
+        height: 50,
         backgroundColor: '#fff',
         flexDirection: 'row',
         borderTopWidth: 1,

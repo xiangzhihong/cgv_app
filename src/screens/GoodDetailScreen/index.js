@@ -121,20 +121,13 @@ const GoodDetailScreen = ({
     }
 
     const getGoodComments = async () => {
-        try {
-            const res = await bizstream.customer.getGoodComments(detail.productCd)
-            if (res.code === 200) {
-                setComments(res.data.content || [])
-            } else {
-                if (res.message != null && res.message !== '') {
-                    tools.Toast.toast(res.message, 1)
-                } else {
-                    tools.Toast.toast('获取失败请稍后再试！', 1)
-                }
-            }
-        } catch (error) {
-            console.log(error)
-        }
+        let url = '/product/product-reviews/ext/productReviewList'
+        const param = {
+            postedAnonymous: '2',
+            productId:detail.productCd,
+        };
+        const data = await apiRequest.post(url, param)
+        setComments(data.content || [])
     }
 
     const getGoodDetail = async () => {
@@ -145,7 +138,7 @@ const GoodDetailScreen = ({
             productCd: detail.productCd,
         };
         const data = await apiRequest.post(url, param)
-        console.log(data)
+
         const {changes, mores, singles} = data.subProductMap
         data.subProductMap.changes = changes ? flattenProduction(changes) : changes
         data.subProductMap.mores = mores ? flattenProduction(mores) : mores
@@ -229,69 +222,11 @@ const GoodDetailScreen = ({
         setShowChangeSelection(false)
     }
 
-    const getResult = () => {
-        let prodcutList = []
-        items.map((data) => {
-            let o = {}
-            if (data.subProduct && data.subProduct.length > 0) {
-                o = {
-                    id: data.productCd,
-                    prodCd: data.productId,
-                    qty: data.quantity,
-                    subprods: data.subProduct.map((ite) => {
-                        const oo = {
-                            id: ite.productCd,
-                            prodCd: ite.productId,
-                            qty: ite.quantity,
-                            productAssocCd: ite.productAssocCd,
-                        }
-                        return oo
-                    }),
-                }
-            } else {
-                o = {
-                    id: data.productCd,
-                    prodCd: data.productId,
-                    qty: data.quantity,
-                }
-            }
-            for (let i = data.quantity; i > 0; i--) {
-                prodcutList.push(o)
-            }
-        })
-        _getDscResult({
-            orderChnl: '07',
-            pointUseYn: current.paymentMethod.point.useYn,
-            orderId: current.onlineOrderNo,
-            coupons: [...current.ticketOrder.ticketCoupons],
-            prods: prodcutList,
-            mbrNm: current.ticketOrder.memberCard.memberCardName,
-            mbrCardNo: current.ticketOrder.memberCard.memberCardNo,
-            mbrCardPrice: current.ticketOrder.memberCard.memberCardAmount,
-            mbrCardType: current.ticketOrder.memberCard.memberCardType,
-            mbrCardPwd: current.ticketOrder.memberCard.memberCardPassword,
-            gftCardNm: current.paymentMethod.memberCard.cardName,
-            gftCertNo: current.paymentMethod.memberCard.cardNo,
-            gftAuthNo: current.paymentMethod.memberCard.cardType,
-            gftCertPrice: current.paymentMethod.memberCard.paymentAmount,
-            vouchers: current.ticketOrder.vouchers,
-            eventNo: current?.ticketOrder?.specialPromo?.promoId,
-            eventType: current?.ticketOrder?.specialPromo?.promoUseSeatNo,
-        })
-    }
 
     const selectOk = () => {
-        goBack()
-        if (type === 'movie' && item.isVirtual !== '1') {
-            getResult()
-        } else if (type === 'movie' && !where && item.isVirtual === '1') {
-            update(detail)
-        } else if (type === 'movie' && where === 'detail' && item.isVirtual === '1') {
-            _addToCart(detail)
-            update(detail)
-        } else if (type !== 'movie' && item.isVirtual === '1') {
-            _addToCart(detail)
-        }
+        // goBack()
+        // _addToCart(detail)
+        tools.alert('购物车','加入购物车')
     }
 
     return (
@@ -307,7 +242,7 @@ const GoodDetailScreen = ({
                           publishComment={() => navigate('PersonalCommentScreen')}
                           gotoAllComments={() => navigate('AllCommentScreen', {
                               detail,
-                              title: detail.productName,
+                              title: '商品评论',
                               status: 2
                           })}/>
                 <ModalChangeSelection isLoading={isLoadingPop} visible={showChangeSelection} selectedItemId={target.id}

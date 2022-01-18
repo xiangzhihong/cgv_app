@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import {View, Dimensions, Image, StyleSheet} from 'react-native'
 import Carousel from 'react-native-snap-carousel'
-import {useHeaderHeight} from '@react-navigation/stack'
 import httpConfig from "../../api/httpConfig";
 
 const {width: deviceWidth, height: deviceHeight} = Dimensions.get('window')
-const HeaderHeight = useHeaderHeight()
 
 let carousel = null
 const CinemaDetailScreenPic = (
@@ -52,7 +50,7 @@ const CinemaDetailScreenPic = (
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height: (deviceHeight - HeaderHeight) / 4 * 3,
+        height: deviceHeight / 4 * 3,
     },
     imageStyle: {
         width: deviceWidth - 40,

@@ -21,6 +21,11 @@ import CinemaDetailScreenPic from "./CinemaDetailScreen/CinemaDetailScreenPic";
 import CinemaDetailScreen from "./CinemaDetailScreen";
 import GoodListScreen from "./GoodListScreen";
 import GoodDetailScreen from "./GoodDetailScreen";
+import ShopingCartScreen from "./ShopingCartScreen";
+
+export {
+    ShopingCartScreen,
+}
 
 export const stacks = [
     {
@@ -97,7 +102,7 @@ export const stacks = [
             const {params = {}} = route
             const {title = 'XX的电影评论', movieId, status, detail} = params
             return {
-                title: status === 2 ? `${title}的评价` : `${title}的电影评论`,
+                title: status === 2 ? `${title}` : `${title}的电影评论`,
                 headerTitleStyle: {
                     width: '95%'
                 },
@@ -120,13 +125,13 @@ export const stacks = [
             const {params = {}} = route
             const {title = 'XX的电影评论', images, productReview, status} = params
             return {
-                title: status === 2 ? `${title}的评价` : `${title}的电影评论`,
+                title: status === 2 ? `${title}` : `${title}的电影评论`,
                 headerRight: () => (
                     <TouchableOpacity
                         onPress={() => {
                             navigation.navigate('MovieShareScreen', {
                                 ...params,
-                                type: 'aaa',
+                                type: 'movie',
                                 images,
                                 productReview,
                             })

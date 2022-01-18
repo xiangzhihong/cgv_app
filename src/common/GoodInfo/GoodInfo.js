@@ -23,9 +23,10 @@ const GoodInfo = ({ onLikePress, isLoggedIn, item, quantity, type, addFun, showT
   showPromotionText, showCountBtnsForced, addToCart: add, removeFromCart: reduce }) => {
   const [proLike, setProLike] = React.useState(null)
   const [proLikeCn, setProLikeCn] = React.useState(null)
+
   useEffect(() => {
 
-  }, [isLoggedIn])
+  }, [])
 
   const onPraisePress = async (data) => {
     tools.Toast.toast(productLike === '1' ? '点赞成功' : '取消点赞' , 1)
@@ -39,7 +40,7 @@ const GoodInfo = ({ onLikePress, isLoggedIn, item, quantity, type, addFun, showT
         <Text style={styles.title} numberOfLines={1}>{item.productName}</Text>
         {onLikePress ? <Container onPress={()=> onPraisePress(item)} style={styles.likeCount}>
           <Image style={styles.likePic}
-            source={proLike === null && item.productLike === '1' || proLike === '1' ? require('../../assets/images/shop/likeRed.png') : proLike === null && item.productLike === null || proLike === null && item.productLike === '0' || proLike === '0' ? require('../../assets/images/shop/clickinglike.png') : null}
+            source={proLike === null &&  proLike === '1' ? require('../../assets/images/shop/likeRed.png') :  require('../../assets/images/shop/clickinglike.png')}
           />
           <Text style={styles.likeNum}>{proLikeCn?proLikeCn:item.likeCnt}</Text>
         </Container> : null}
@@ -52,7 +53,7 @@ const GoodInfo = ({ onLikePress, isLoggedIn, item, quantity, type, addFun, showT
           <Text style={styles.taxPrice}>¥{item.priceWithTax}</Text>
         </View>
         <View style={styles.btns}>
-          {(showCountBtnsForced || item.isVirtual === '0') && <CountBtns count={quantity} reduce={() => reduce(item)} add={() => add(item)} />}
+          {(showCountBtnsForced || item.isVirtual === '0') && <CountBtns count={quantity} reduce={() => reduce(item)} add={() => tools.Toast.toast('暂未实现' , 1)} />}
           {(!onLikePress && !showCountBtnsForced && item.isVirtual !== '0') && <View style={styles.btnBg}><Text style={styles.btnText}>套餐换选</Text></View>}
         </View>
       </View>
@@ -102,7 +103,6 @@ const styles = StyleSheet.create({
     marginRight: 15,
     fontSize: 12.5,
     color: '#989FB5',
-    // height: 31,
   },
   bottomLayer: {
     flexDirection: 'row',
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   btnBg: {
     backgroundColor:'#FC5869',
-    padding: 6,
+    paddingVertical: 5,
     paddingHorizontal: 10,
     height: 26,
     borderRadius: 13,
@@ -168,7 +168,9 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: '#fff',
-    fontSize: 15,
+    fontSize: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 })
 

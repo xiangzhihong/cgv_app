@@ -22,6 +22,7 @@ import CinemaDetailScreen from "./CinemaDetailScreen";
 import GoodListScreen from "./GoodListScreen";
 import GoodDetailScreen from "./GoodDetailScreen";
 import ShopingCartScreen from "./ShopingCartScreen";
+import SelectSeatScreen from "./SelectSeatScreen";
 
 export {
     ShopingCartScreen,
@@ -266,6 +267,17 @@ export const stacks = [
         name: 'SelectSessionScreen',
         component: SelectSessionScreen,
         options: {title: '选择场次'},
+    },
+    {
+        name: 'SelectSeatScreen',
+        component: SelectSeatScreen,
+        options: ({route}) => {
+            const {params = {}} = route
+            const {title = '选择座位'} = params
+            return {
+                title,
+            }
+        },
     },
     {
         name: 'CinemaDetailScreen',

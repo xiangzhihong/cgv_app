@@ -173,61 +173,24 @@ const SelectSessionScreen = (
         const {movThats = [], movCd, movId, imgUrl, brandName} = currentSession[0]
         const {sarftThatCd, times = []} = movThats[0]
         const {screenCd, scnSchSeq, screenName, movLang, movType} = data
-        if (seatNoCount > 0) {
-            tools.alert(
-                '您有一个未支付订单，现在您可以重现选座下单，或到我的订单中继续完成支付。',
-                undefined,
-                [{
-                    text: '取消', style: 'cancel', onPress: () => {
-                        goBack()
-                    },
-                }, {
-                    text: '确定', onPress: () => {
-                        goBack()
-                        navigation.navigate('SelectSeatScreen', {
-                            sarftThatCd,
-                            imgUrl,
-                            thatCd,
-                            times,
-                            selected: data,
-                            index,
-                            schedulDate,
-                            screenCd,
-                            scnSchSeq,
-                            screenName,
-                            movCd,
-                            movId,
-                            movName,
-                            movLang, movType, brandName,
-                            cinema: route.params,
-                            title: route.params.thatNm,
-                        })
-                    },
-                }],
-                {},
-                '',
-                false,
-            )
-        } else {
-            navigation.navigate('SelectSeatScreen', {
-                sarftThatCd,
-                imgUrl,
-                thatCd,
-                times,
-                selected: data,
-                index,
-                schedulDate,
-                screenCd,
-                scnSchSeq,
-                screenName,
-                movCd,
-                movId,
-                movName,
-                movLang, movType, brandName,
-                cinema: route.params,
-                title: route.params.thatNm,
-            })
-        }
+        navigation.navigate('SelectSeatScreen', {
+            sarftThatCd,
+            imgUrl,
+            thatCd,
+            times,
+            selected: data,
+            index,
+            schedulDate,
+            screenCd,
+            scnSchSeq,
+            screenName,
+            movCd,
+            movId,
+            movName,
+            movLang, movType, brandName,
+            cinema: route.params,
+            title: route.params.thatNm,
+        })
     }
 
     const {movName = '', scnTm = '', movgnr = '', activity = '0'} = selectedMovie || {}

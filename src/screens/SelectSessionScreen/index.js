@@ -37,7 +37,7 @@ const SelectSessionScreen = (
     useEffect(() => {
         getMoviesByCinema()
         getAdvert()
-        seatCountPos()
+        // seatCountPos()
     }, [])
 
     const getAdvert = async () => {
@@ -54,6 +54,7 @@ const SelectSessionScreen = (
     }
 
     const getMoviesByCinema = async () => {
+        //https://prd-api.cgv.com.cn/product/plans/thats/movies?prThatCd=1166&chnlNo=05
         let baseUrl = '/product/plans/thats/movies'
         let param = {
             prThatCd: thatCd,
@@ -287,7 +288,6 @@ const SelectSessionScreen = (
 
     return (
         <ScrollView style={{backgroundColor: '#fff'}}>
-            {/*<View style={{flex: 1}}><Empty/></View> */}
             {movies &&
                 <View>
                     <TopAddress data={route.params} addrTextType="body"

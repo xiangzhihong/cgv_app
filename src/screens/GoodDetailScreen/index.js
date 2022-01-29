@@ -127,7 +127,7 @@ const GoodDetailScreen = ({
             productId:detail.productCd,
         };
         const data = await apiRequest.post(url, param)
-        setComments(data.content || [])
+        // setComments(data.content || [])
     }
 
     const getGoodDetail = async () => {

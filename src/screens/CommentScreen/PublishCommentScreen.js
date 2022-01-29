@@ -17,11 +17,12 @@ const PublishCommentScreen = ({route, navigation, getMovieCommentList: _getMovie
 
     React.useEffect(() => {
         navigation.setParams({
-                rightPress: publishComment
+                rightPress: publishComment()
             },
         )
     }, [movieId, starCount])
-    const publishComment = async () => {
+
+    function publishComment() {
         try {
             if (loading) return null
             if (TextText.trim().length === 0) {

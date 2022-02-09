@@ -15,8 +15,7 @@ import apiRequest from "../../api";
 import httpConfig from "../../api/httpConfig";
 
 const Left = new Animated.Value(0)
-
-const {width: deviceWidth} = Dimensions.get('window')
+const {width} = Dimensions.get('window')
 
 const SelectSeatScreen = ({
                               navigation,
@@ -51,12 +50,9 @@ const SelectSeatScreen = ({
     const {scnDyName = '', scnDyDay = '', scnDy} = schedulDate
     const {thatNm, thatId, thatAddr, partyId, srmCd} = cinema
     const [seatList, setSeatList] = React.useState([])
-    const [peopleList, setPeopleList] = React.useState([])
     const [seatGrdPrcs, setSeatGrdPrcs] = React.useState([])
-    const [seatThumbnailContainer, setSeatThumbnailContainer] = React.useState(
-        {},
-    )
-    const [status, setStatus] = React.useState('LOADING')
+    const [peopleList, setPeopleList] = React.useState([])
+    const [seatThumbnailContainer, setSeatThumbnailContainer] = React.useState({})
     const [screenN, setScreenN] = React.useState(screenName)
     const [haveCheckImg, setHaveCheckImg] = React.useState(null)
     const [activity, setActivity] = React.useState(null)
@@ -69,8 +65,8 @@ const SelectSeatScreen = ({
 
     React.useEffect(() => {
         getSeats(screenCd, scnSchSeq)
-        getSeatIcon()
-        getFacilityList()
+        getSeatAdvise()
+        // getFacilityTipList()
         getSeenPeo()
     }, [index])
 
@@ -97,7 +93,6 @@ const SelectSeatScreen = ({
                 '',
                 false,
             )
-
         } else {
             reloadNew()
         }
@@ -108,26 +103,23 @@ const SelectSeatScreen = ({
         setPrice(0)
         setSelected([])
         getSeats(screenCd, scnSchSeq)
-        _resetCheckoutProductState()
-        getSeatIcon()
-        getFacilityList()
+        getSeatAdvise()
+        getFacilityTipList()
     }
 
-  async function getSeenPeo() {
-       let baseUrl = '/party/api/getPropertyGetByPropertyId?resourceId=real.name.system&propertyId=real.name.system'
+    async function getSeenPeo() {
+        let baseUrl = '/party/api/getPropertyGetByPropertyId?resourceId=real.name.system&propertyId=real.name.system'
         const data = await apiRequest.get()(baseUrl)
         setSeeMovieStatus(data.systemPropertyValue)
     }
 
-    async function getFacilityList() {
+    async function getFacilityTipList() {
         let baseUrl = '/facility/api/facility/content/list'
         let param = {
             id: scnSchSeq
         };
         const data = await apiRequest.post(baseUrl, param)
-        console.log(res)
-        data && data.length > 0
-            ? tools.alert(
+        data && data.length > 0 && tools.alert(
             <View>
                 {data.map((item, index) => (
                     <Text style={styles.textStyle} key={index}>
@@ -135,25 +127,23 @@ const SelectSeatScreen = ({
                     </Text>
                 ))}
             </View>,
-            )
-            : null
+        )
     }
 
-    async function getSeats(screenId, _scnSchSeq) {
+    async function getSeats(screenId, scnSchSeq) {
         let baseUrl = '/order/seats'
         let param = {
             prScreenCd: screenId,
             prThatCd: thatCd,
             prSarftThatCd: sarftThatCd,
-            scnSchSeq: _scnSchSeq,
+            scnSchSeq: scnSchSeq,
         };
         const res = await apiRequest.post(baseUrl, param)
-        console.log(res)
         setSeatList(res.otp_seat)
         setSeatGrdPrcs(res.seatGrdPrcs)
     }
 
-    async function getSeatIcon() {
+    async function getSeatAdvise() {
         let baseUrl = '/content/api/advert/query?channel=APP&advertType=APP_SEAT_AD&thatCd=' + thatCd
         const data = await apiRequest.get(baseUrl)
         if (data != null && data.length > 0) {
@@ -319,7 +309,6 @@ const SelectSeatScreen = ({
             } else {
                 bktAmtPrices += bktAmt
             }
-
             noCardDscAmtPrices += mbrCrdPrc
         })
         setPrice(bktAmtPrices)
@@ -357,7 +346,7 @@ const SelectSeatScreen = ({
             thatCd,
             sarftThatCd,
             screenCd,
-            thatId: selectedCinema.facilityId,
+            thatId: thatId,
             movName,
             sarftMovCd: brandName,
             thatName: thatNm,
@@ -379,62 +368,16 @@ const SelectSeatScreen = ({
             formId: '',
             seats: seatsLists,
             type: 'movie',
-            goBackRefresh: (type, orderId) => goBackRefresh(type, orderId),
         }
         if (seatsLists && seatsLists.length === 0) {
             tools.Toast.toast('请选择座位', 1)
             return
         }
-        if ((seeMovieStatus === '01' && peopleList.length < 1) || (seeMovieStatus === '02' && selected.length !== peopleList.length)) {
-            tools.alert(
-                <View>
-                    <Text>
-                        <Text style={styles.textStyle}>
-                            &emsp;&emsp;根据国家电影局《关于在疫情防控常态化条件下有序推进电影院恢复开放的通知》中
-                            《中国电影发行放映协会电影放映场所恢复开放疫情防控指南》的要求，
-                            为贯彻落实国家疫情防控，我们将对每张电影票对应的观影人进行实名信息登记，
-                            包括
-                        </Text>
-                        <Text style={styles.textStyle}>姓名</Text>
-                        <Text style={styles.textStyle}>、</Text>
-                        <Text style={styles.textStyle}>身份证号</Text>
-                        <Text style={styles.textStyle}>
-                            。 您提供的信息，可能会分享至电影行业主管部门及相关疫情监管部门。
-                            为了保障您的观影健康，请您如实填写。{' '}
-                        </Text>
-                    </Text>
-                    <Text style={styles.textStyle}>&emsp;&emsp;感谢您的配合与理解！</Text>
-                </View>,
-                '购票实名信息登记',
-                [
-                    {text: '不同意', style: 'cancel', onPress: (close) => close()},
-                    {text: '同意，去登记', onPress: backOut},
-                ],
-            )
-            return
-        }
-        if (
-            (seatsLists &&
-                seatsLists.length > 0 &&
-                peopleList &&
-                peopleList.length > 0) || seeMovieStatus === '00'
-        ) {
-            _resetCheckoutProductState()
-            tools.loading()
-            _createTicketOrder(orderParams)
-        }
+        tools.loading()
+        navigation.navigate('PaymentScreen',orderParams)
     }
 
-    const backOut = () => {
-        goBack()
-        navigation.navigate('CommonPeopleScreen', {
-            len: seeMovieStatus === '01' ? 1 : seeMovieStatus === '02' ? selected.length : null,
-            checkStatus: true,
-            refresh: _refresh,
-        })
-    }
-
-    const _refresh = (data) => {
+    const refreshData= (data) => {
         setPeopleList(data)
     }
 
@@ -454,7 +397,7 @@ const SelectSeatScreen = ({
     }
 
     return (
-        <View style={{flex: 1,backgroundColor: '#fff'}}>
+        <View style={{flex: 1, backgroundColor: '#fff'}}>
             <View style={{flex: 1, backgroundColor: '#F3F4F5'}}>
                 <ScrollView>
                     {showStatus ? <Tip
@@ -479,50 +422,45 @@ const SelectSeatScreen = ({
                         activeIndex={activeIndex}
                         onPress={onTimePress}
                     />
-                    {/* <Tip contentStyle={{ color: '#777' }} contentType="label" contentLeft="温馨提示：如果3D版本电影，可免费使用经过消毒的3D眼镜" style={{ backgroundColor: '#FEF7EC' }}/> */}
+                    <Tip contentStyle={{color: '#777'}} contentType="label" contentLeft="温馨提示：如果3D版本电影，可免费使用经过消毒的3D眼镜"
+                         style={{backgroundColor: '#FEF7EC'}}/>
                     <View
-                        style={{
-                            flexDirection: 'row',
-                            flexWrap: 'wrap',
-                            justifyContent: 'center',
-                            backgroundColor: '#fff',
-                            paddingBottom: 10,
-                        }}>
+                        style={styles.seatItem}>
                         <SeatTopItem
                             icon={seats.common}
                             text="可选"
-                            style={{width: Dimensions.get('window').width / 5}}
+                            style={{width: width / 5}}
                         />
                         <SeatTopItem
                             icon={
                                 haveCheckImg
-                                    ? httpConfig.mediaUrl+ haveCheckImg
+                                    ? httpConfig.mediaUrl + haveCheckImg
                                     : seats.common05
                             }
                             text="已选"
-                            style={{width: Dimensions.get('window').width / 5}}
+                            style={{width: width / 5}}
                         />
                         <SeatTopItem
                             icon={seats.common06}
                             text="已售"
-                            style={{width: Dimensions.get('window').width / 5}}
+                            style={{width: width / 5}}
                         />
                         <SeatTopItem
                             icon={seats.common01_Yellow}
                             text="线上优选"
-                            style={{width: Dimensions.get('window').width / 5}}
+                            style={{width: width / 5}}
                         />
                         <SeatTopItem
                             icon={seats.corona}
                             text="停售"
-                            style={{width: Dimensions.get('window').width / 5}}
+                            style={{width: width / 5}}
                         />
                         {
                             seatGrdPrcs?.findIndex(ite => ite.typeNm === 'lovers') > -1 ?
                                 <SeatTopItem
                                     icon={seats.lovers}
                                     text="情侣座"
-                                    style={{width: Dimensions.get('window').width / 5}}
+                                    style={{width: width / 5}}
                                 />
                                 : null
                         }
@@ -531,7 +469,7 @@ const SelectSeatScreen = ({
                                 <SeatTopItem
                                     icon={seats['4d']}
                                     text="4DX"
-                                    style={{width: Dimensions.get('window').width / 5}}
+                                    style={{width: width / 5}}
                                 />
                                 : null
                         }
@@ -540,7 +478,7 @@ const SelectSeatScreen = ({
                                 <SeatTopItem
                                     icon={seats.gold}
                                     text="GOLD"
-                                    style={{width: Dimensions.get('window').width / 5}}
+                                    style={{width: width / 5}}
                                 />
                                 : null
                         }
@@ -549,15 +487,13 @@ const SelectSeatScreen = ({
                                 <SeatTopItem
                                     icon={seats.widebox}
                                     text="宽座"
-                                    style={{width: Dimensions.get('window').width / 5}}
+                                    style={{width: width / 5}}
                                 />
                                 : null
                         }
-
                     </View>
                     {seatList && seatList.length > 0 ? (
                         <Seat
-                            status={status}
                             seatList={seatList}
                             selectSeat={selectSeat}
                             selected={selected}
@@ -565,8 +501,7 @@ const SelectSeatScreen = ({
                             animateLeft={Left}
                             haveCheckImg={haveCheckImg}
                             seatThumbnailContainer={seatThumbnailContainer}
-                            setSeatThumbnailContainer={setSeatThumbnailContainer}
-                        />
+                            setSeatThumbnailContainer={setSeatThumbnailContainer}/>
                     ) : null}
                 </ScrollView>
             </View>
@@ -598,11 +533,9 @@ const SelectSeatScreen = ({
                         </Text>
                     </View>
                 )}
-                text="一次最多可选择6个座位"
-            />
+                text="一次最多可选择6个座位"/>
             <Button
-                hasNotch={tools.isIPhoneX()}
-                style={{backgroundColor: '#FC5869'}}
+                color={'#FC5869'}
                 title={selected.length === 0 ? '选择座位' : '确认选座'}
                 onPress={onSubmit}
             />
@@ -642,13 +575,20 @@ const MovieHeader = ({
 
 const styles = StyleSheet.create({
     screen: {
-        width: deviceWidth / 2,
-        borderBottomLeftRadius: deviceWidth / 4,
-        borderBottomRightRadius: deviceWidth / 4,
+        width: width / 2,
+        borderBottomLeftRadius: width / 4,
+        borderBottomRightRadius: width / 4,
         backgroundColor: '#DCDCDC',
         overflow: 'hidden',
         paddingVertical: 3,
         paddingHorizontal: 10,
+    },
+    seatItem: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        backgroundColor: '#fff',
+        paddingBottom: 10,
     },
     row: {
         width: 20,
@@ -669,9 +609,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     textStyle: {
-      color: '#181818',
-      fontSize: 13,
-      lineHeight: 25
+        color: '#181818',
+        fontSize: 13,
+        lineHeight: 25
     },
 })
 

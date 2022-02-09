@@ -7,7 +7,6 @@ export default {
   catalogGridItemHeight: 200,
   catalogGridItemImageHeight: 120,
   appbarButtonHeight: 23,
-  // homePageSliderHeight: 200,
   homePageSliderHeight: 125,
   homePageAdBannerHeight: 90,
   promotionPageSliderHeight: 165,

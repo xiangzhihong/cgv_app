@@ -23,6 +23,7 @@ import GoodListScreen from "./GoodListScreen";
 import GoodDetailScreen from "./GoodDetailScreen";
 import ShopingCartScreen from "./ShopingCartScreen";
 import SelectSeatScreen from "./SelectSeatScreen";
+import PaymentScreen from "./PaymentScreen/PaymentScreen";
 
 export {
     ShopingCartScreen,
@@ -329,6 +330,27 @@ export const stacks = [
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => {
+                            navigation.goBack()
+                        }}
+                        style={{paddingLeft: 10}}>
+                        <Icon name="chevron-thin-left" size={20}/>
+                    </TouchableOpacity>
+                ),
+            }
+        },
+    },
+    {
+        name: 'PaymentScreen',
+        component: PaymentScreen,
+        options: ({navigation, route: {params}}) => {
+            const {goBackRefresh, orderId} = params || {}
+            return {
+                title: '订单确认',
+                headerLeft: () => (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={async () => {
+                            goBackRefresh(2, orderId)
                             navigation.goBack()
                         }}
                         style={{paddingLeft: 10}}>

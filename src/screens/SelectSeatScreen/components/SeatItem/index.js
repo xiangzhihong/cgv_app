@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import {View, StyleSheet, TouchableOpacity, Image} from 'react-native'
 import seats from '../../../../assets/images/seat'
 import httpConfig from "../../../../api/httpConfig";

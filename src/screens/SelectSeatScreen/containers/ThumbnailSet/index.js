@@ -1,11 +1,10 @@
-import {Animated, Dimensions, View} from 'react-native'
-import SeatItem from '../../components/SeatItem'
 import React from 'react'
+import {Animated, Dimensions, StyleSheet, View} from 'react-native'
+import SeatItem from '../../components/SeatItem'
 
 const {width: deviceWidth} = Dimensions.get('window')
 
-const ThumbnailSet = ({selected, seatList, seatThumbnailContainer, setSeatThumbnailContainer, animateLeft}) => {
-
+const ThumbnailSet = ({selected, seatList, seatThumbnailContainer, animateLeft}) => {
     const {width = deviceWidth} = seatThumbnailContainer
     return (
         <Animated.View style={[
@@ -24,18 +23,10 @@ const ThumbnailSet = ({selected, seatList, seatThumbnailContainer, setSeatThumbn
                     outputRange: [0, 1],
                 }),
             },
-        ]} onLayout={(e) => setSeatThumbnailContainer(e.nativeEvent.layout)}>
+        ]} >
             <View>
                 <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                    <View style={{
-                        backgroundColor: '#999999',
-                        borderBottomLeftRadius: 50,
-                        borderBottomRightRadius: 50,
-                        height: 8,
-                        flex: 1,
-                        marginHorizontal: 50,
-                        marginTop: 2
-                    }}/>
+                    <View style={styles.contain}/>
                 </View>
                 <View>
                     <View>
@@ -69,5 +60,17 @@ const ThumbnailSet = ({selected, seatList, seatThumbnailContainer, setSeatThumbn
         </Animated.View>
     )
 }
+
+const styles = StyleSheet.create({
+    contain: {
+        backgroundColor: '#999999',
+        borderBottomLeftRadius: 50,
+        borderBottomRightRadius: 50,
+        height: 8,
+        flex: 1,
+        marginHorizontal: 50,
+        marginTop: 2
+    },
+})
 
 export default ThumbnailSet

@@ -187,7 +187,9 @@ const SelectSessionScreen = (
             movCd,
             movId,
             movName,
-            movLang, movType, brandName,
+            movLang,
+            movType,
+            brandName,
             cinema: route.params,
             title: route.params.thatNm,
         })

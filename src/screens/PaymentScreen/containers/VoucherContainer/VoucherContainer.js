@@ -4,26 +4,19 @@ import Card from '../../../../common/Card/Card'
 import SectionHeader from '../../../../common/SectionHeader'
 import {navigate} from '../../../../utils'
 
-const VoucherContainer = ({current, getDscResult: _getDscResult,}) => {
+const VoucherContainer = ({data}) => {
     return (
         <Card type="clear" style={styles.container}>
             <View>
                 <SectionHeader title="代金券(兑换券、观摩券、观影券)" isRenderRight onClick={() => navigate('ModalCGVPayScreen', {
                     confirm: (data) => _getDscResult(data),
                     status: 4,
-                    seats: current.ticketOrder.ticket.seats,
+                    seats: data.seats,
                     title: '使用代金券',
                     mepty: '您还没有代金券～',
                     addCardTitle: '添加代金券',
 
                 })}/>
-                {current.ticketOrder && current.ticketOrder.ticketTotal && current.ticketOrder.ticketTotal.details && current.ticketOrder.ticketTotal.details.length > 0 ?
-                    current.ticketOrder.ticketTotal.details.map((item, index) => (
-                        item.dsc_type === 'voucher' ? <View style={styles.discountLine} key={index}>
-                            <Text type='subheading' style={styles.discountName}>{item.dsc_name}</Text>
-                            <Text type='bodyheading' style={styles.discountAmount}>-￥{item.dsc_price}</Text>
-                        </View> : null
-                    )) : null}
             </View>
         </Card>
     )

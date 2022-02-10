@@ -13,18 +13,8 @@ const PaymentBannerContainer = ({ current, seeMore }) => {
         />
         <View style={styles.card}>
           <Text type="subheading" style={{color: '#fff'}}>开通E优卡立享购票优惠</Text>
-          {
-            current.cinema && current.cinema.money && current.cinema.money.price > current.cinema.money.cardPrice ?
-              <Text type="bodyheading" style={{color: '#fff'}}>
-                开通后，影票立省
-                <Text style={{color: '#fff'}}>
-                  ￥{(current.cinema.money && current.cinema.money.price - current.cinema.money.cardPrice).toFixed(0)}
-                </Text>
-              </Text>
-              : null
-          }
         </View>
-        <TouchableOpacity onPress={seeMore} style={styles.sectionTitleButton}><Text type="bodyheading" style={{color: '#fff'}}>{`去开卡 >`}</Text></TouchableOpacity>
+        <TouchableOpacity onPress={seeMore} style={styles.sectionTitleButton}><Text  style={{color: '#fff'}}>{`去开卡 >`}</Text></TouchableOpacity>
       </View>
     </Card>
   );

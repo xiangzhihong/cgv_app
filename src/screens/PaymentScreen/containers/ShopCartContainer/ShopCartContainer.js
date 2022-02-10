@@ -290,7 +290,6 @@ const styles = StyleSheet.create({
   },
   shop2TB: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginTop: 12,
     width: '100%',
     justifyContent: 'space-between',

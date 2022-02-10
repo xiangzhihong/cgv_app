@@ -342,15 +342,15 @@ export const stacks = [
     {
         name: 'PaymentScreen',
         component: PaymentScreen,
-        options: ({navigation, route: {params}}) => {
-            const {goBackRefresh, orderId} = params || {}
+        options: ({navigation, route}) => {
+            const {params = {}} = route
+            console.log('PaymentScreen:'+params)
             return {
                 title: '订单确认',
                 headerLeft: () => (
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={async () => {
-                            goBackRefresh(2, orderId)
+                        onPress={() => {
                             navigation.goBack()
                         }}
                         style={{paddingLeft: 10}}>

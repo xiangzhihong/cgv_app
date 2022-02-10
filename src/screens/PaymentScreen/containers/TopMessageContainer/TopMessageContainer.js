@@ -6,16 +6,14 @@ const {width} = Dimensions.get('window')
 
 const TopMessageContainer = ({minutes, seconds }) => {
   const renderMessage = () => (
-    <Text type="body" style={styles.messageText()}>请您在 {minutes}分{seconds}秒 内完成支付，超时将取消订单。</Text>
+    <Text style={styles.messageText}>请您在 {minutes}分{seconds}秒 内完成支付，超时将取消订单。</Text>
   );
-
   return (
     <Card type="clear" style={styles.container}>
       {renderMessage()}
     </Card>
   );
 };
-
 
 const styles = StyleSheet.create({
   messageText:{

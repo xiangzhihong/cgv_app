@@ -2,17 +2,14 @@ import React, {useEffect, useRef, useState} from 'react'
 import {
     BackHandler,
     Dimensions,
-    Image,
     Platform,
     ScrollView,
     StyleSheet,
     Text,
-    TextInput,
     TouchableOpacity,
     View
 } from 'react-native'
 import Card from '../../common/Card/Card'
-import Status from '../../bizstream/Status'
 import {aliPay, UPPay, Wxpay} from '../../nativeBridge/pay'
 import {
     CGVPaymentMethodContainer,
@@ -24,15 +21,17 @@ import {
     ThirdPartyPaymentMethodContainer,
     TicketSummaryContainer,
     TicketTotalContainer,
-    TopMessageContainer,
-    VoucherContainer,
+    TopMessageContainer, VoucherContainer,
 } from './containers'
 import {PaymentBottomBtn} from './components'
 import {bizstream} from '../../bizstream'
 import {AESUtils, navigate, tools} from '../../utils'
 import {goBack} from '../../utils/rootNavigation'
+import couponPoint from '../../mock/coupon.json'
 
 const {width, height} = Dimensions.get('window')
+
+const endTime = new Date().getTime() + (14 * 60 + 59) * 1000  //倒计时截止时间
 
 const PaymentScreen = ({
                            route,
@@ -40,8 +39,6 @@ const PaymentScreen = ({
                            payType,
                            selectedCinema,
                            currentRouteName,
-                           userInfo,
-                           ticketOrderStatus,
                            navigation,
                            getBestDisc: _getBestDisc,
                            createPayment: _createPayment,
@@ -58,7 +55,11 @@ const PaymentScreen = ({
                            featuredProducts,
                            updateUserInfoInRedux: _updateUserInfoInRedux
                        }) => {
-    const {goBackRefresh, type, orderId} = route.params
+    console.log(route.params)
+    const {
+        cinema, lang, movCd, movFmt, movId, movName, movUrl, screenName, seats, srmCd,
+        thatAddr, thatCd, thatId, thatName, thatParty, type
+    } = route.params || {}
     const [pointCoupons, setPointCoupons] = React.useState([])
     const [minutes, setMinutes] = useState('14')
     const [seconds, setSeconds] = useState('59')
@@ -71,16 +72,15 @@ const PaymentScreen = ({
     const clearTimer = () => interval.current && clearInterval(interval.current)
 
     useEffect(() => {
-        payAttrFun()
-        getGoodList()
+        // payAttrFun()
+        // getGoodList()
         getCouponByPoint()
-        getCounpons()
-        if (!type) {
-            baseFun()
-        }
-        if (type) {
-            getAvailableCoupons()
-        }
+        // if (!type) {
+        //     baseFun()
+        // }
+        // if (type) {
+        //     getAvailableCoupons()
+        // }
 
     }, [])
 
@@ -148,21 +148,9 @@ const PaymentScreen = ({
     }
 
     const getCouponByPoint = async () => {
-        try {
-            const data = await bizstream.customer.getCouponByPoint()
-            setPointCoupons(data.data)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    const initData = async () => {
-        try {
-            const data = await bizstream.customer.getUserInfo()
-            _updateUserInfoInRedux(data)
-        } catch (error) {
-            console.log(error)
-        }
+        const data = couponPoint
+        console.log('couponPoint:' + couponPoint)
+        setPointCoupons(data.data)
     }
 
     const cancelFunC = () => {
@@ -179,10 +167,10 @@ const PaymentScreen = ({
         BackHandler.removeEventListener('hardwareBackPress', cancelFunC)
     }
 
+
     const getAcquisitionCountdown = () => {
-        const endTime_ = current?.autoCancelDatetime
         const newTime = new Date().getTime()
-        const endTime = new Date(endTime_?.replace(/-/g, '/')).getTime()
+        console.log('getAcquisitionCountdown: ' + endTime - newTime)
         if (endTime - newTime > 0) {
             const time = (endTime - newTime) / 1000
             // 获取天、时、分、秒
@@ -203,16 +191,7 @@ const PaymentScreen = ({
                     {
                         text: '重新下单',
                         onPress: () => {
-                            goBack()
-                            cancelOrder()
-                            if (currentRouteName !== 'PaymentScreen') {
-                                navigation.popToTop()
-                            } else {
-                                if (type) {
-                                    goBackRefresh()
-                                }
-                                navigation.goBack()
-                            }
+                            navigation.goBack()
                         },
                     },
                 ],
@@ -225,13 +204,6 @@ const PaymentScreen = ({
         }
     }
 
-    const cancelOrder = async () => {
-        try {
-            await bizstream.customer.cancelOrder(orderId)
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     const timeFormat = (param) => {
         return param < 10 ? `0${param}` : param
@@ -239,13 +211,11 @@ const PaymentScreen = ({
 
     const placeOrder = async () => {
         if (clickflag) {
-            console.log("订单已经提交！")
             return;
         }
         clickflag = true;
         clearTimer()
         clearInterval(interval.current)
-        // goBack()
         let seats = []
         seats =
             current.ticketOrder &&
@@ -333,9 +303,6 @@ const PaymentScreen = ({
                 mbrCardPrice: current.ticketOrder.memberCard.memberCardAmount,
                 mbrCardType: current.ticketOrder.memberCard.memberCardType,
                 mbrCardPwd: current.ticketOrder.memberCard.memberCardPassword,
-                /**
-                 * 卖品
-                 */
                 prods: arr,
                 mobile: AESUtils.AES(current.mobileNo),
             }
@@ -365,7 +332,6 @@ const PaymentScreen = ({
             const data = await bizstream.customer.createPayment(paymentInformation)
             clickflag = false;
             if (data.RS_CD === '00') {
-                paymentInformation.pointUseYn === '1' ? initData() : null
                 if (current.totalAmount) {
                     if (payType === 1) {
                         const isSupported = await Wxpay.isSupported()
@@ -473,116 +439,6 @@ const PaymentScreen = ({
         }
     }
 
-    /**
-      * TODO：获取优惠券
-      * */
-    const getCounpons = () => {
-        if (!type) {
-            _getUsableCouponsAndCardsForSchedule({thatCd: selectedCinema.thatCd, srmCd: selectedCinema.srmCd})
-        } else {
-            _getUsableCouponsAndCardsForSchedule({
-                scnDay: current.ticketOrder.ticket.schedule.displayName,
-                thatCd: selectedCinema.thatCd, // 本部影院代码（例如：'1011'）
-                srmCd: selectedCinema.srmCd, // 本部渠道代码（例如：'1096')
-                scnSchSeq: current.ticketOrder.ticket.schedule.code, // 排期号（例如：14561823）
-                screenCd: current.ticketOrder.screen.hqCode, // 本部影厅代码（例如：'0006'）
-                seats: current.ticketOrder.ticket.seats,
-                movCd: current.ticketOrder.ticket.movie.hqCode,
-            })
-        }
-        /*
-         * TODO：星意卡
-         * */
-        _getGiftCards(selectedCinema.thatCd)
-        /*
-         * TODO：积分
-         * */
-        _getCustomerPoint()
-    }
-
-    const getAvailableCoupons = async () => {
-        if (current?.ticketOrder?.ticket?.movie?.activity === "1") {
-            getPreActive()
-        } else {
-            try {
-                const res = await bizstream.customer.getUsableCouponsAndCardsForSchedule({
-                    scnDay: current.ticketOrder.ticket.schedule.displayName,
-                    thatCd: selectedCinema.thatCd, // 本部影院代码（例如：'1011'）
-                    srmCd: selectedCinema.srmCd, // 本部渠道代码（例如：'1096')
-                    scnSchSeq: current.ticketOrder.ticket.schedule.code, // 排期号（例如：14561823）
-                    screenCd: current.ticketOrder.screen.hqCode, // 本部影厅代码（例如：'0006'）
-                    seats: current.ticketOrder.ticket.seats,
-                    movCd: current.ticketOrder.ticket.movie.hqCode,
-                })
-
-                const enctryptedSeat = []
-
-                current.ticketOrder.ticket &&
-                current.ticketOrder.ticket.seats &&
-                current.ticketOrder.ticket.seats.length > 0 &&
-                current.ticketOrder.ticket.seats.map((item) => {
-                    const seat = {
-                        ...item,
-                        seatNo: item.seatNo,
-                        seatGrdCd: item.seatGrdCd
-                    }
-                    enctryptedSeat.push(seat)
-                })
-
-                const getBestDiscRequest = {
-                    /**
-                     * 订单共同
-                     */
-                    thatCd: selectedCinema.thatCd, // 本部影院代码（例如：'1011'）
-                    srmCd: selectedCinema.srmCd, // 本部渠道代码（例如：'1096')
-                    scnSchSeq: current.ticketOrder.ticket.schedule.code, // 排期号（例如：14561823）
-                    screenCd: current.ticketOrder.screen.hqCode, // 本部影厅代码（例如：'0006'）
-                    movCd: current.ticketOrder.ticket.movie.hqCode, // 本部电影代码（例如：'10003626'）
-                    seats: enctryptedSeat,
-                }
-                let coupons = []
-                let obj = {}
-                if (res.RS_CD === '00') {
-                    const res2 = await bizstream.customer.getBestDisc(getBestDiscRequest)
-                    if (res2.RS_CD === '00') {
-                        res2?.LIST_COM_SALEDSC?.map(item => {
-                            res?.LIST_COUPON?.map(ite => {
-                                if (item.DSC_AUTH_NO === ite.CPN_NO) {
-                                    let obj = {
-                                        cardNo: AESUtils.AES(ite.CPN_NO),
-                                        typeCd: AESUtils.AES(ite.DSC_TYP_CD),
-                                        lijianYn: AESUtils.AES(ite.LIJIAN_YN),
-                                        ...ite,
-                                    }
-                                    coupons.push(obj)
-                                }
-                            })
-                            res?.LIST_COUPON_ALL?.map(ite => {
-                                if (item.DSC_AUTH_NO === ite.MBR_CRD_NO) {
-                                    obj = ite
-                                }
-                            })
-                        })
-                        let data = {
-                            mbrCardNo: obj ? AESUtils.AES(obj.MBR_CRD_NO) : null,
-                            mbrCardPrice: obj?.USE_ABL_RAMT,
-                            mbrCardType: obj ? AESUtils.AES(obj.MBR_CRD_TYP_CD) : null,
-                            mbrNm: obj?.MBR_CRD,
-                            mbrCardPwd: obj ? AESUtils.AES(obj.PWD_UPD_YN) : null,
-                        }
-                        baseFun(coupons, data)
-                    }
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        /**
-         * 获取代金券
-         */
-        _setTicketVoucher()
-    }
 
     const getGoodList = () => {
         _getFeaturedProducts(selectedCinema.facilityId)
@@ -621,232 +477,61 @@ const PaymentScreen = ({
         />
     )
 
+
+    function buildPointCoupons() {
+        return (<Card type="clear" style={styles.pointCard}>
+                <View style={{paddingVertical: 10}}>
+                    <Text bold style={{fontSize: 15, color: '#000000'}}>积分兑换更多优惠券<Text
+                        style={{fontSize: 13, color: '#8e8e8e'}}>（当前可用积分0）</Text></Text>
+                </View>
+                {
+                    pointCoupons.map((item, index) => {
+                        return (
+                            <View key={index} style={styles.point}>
+                                <View style={{flex: 1, paddingLeft: 15}}>
+                                    <Text style={styles.cpnTxt}>{item.cpnNm}</Text>
+                                    <Text style={styles.pointTxt}>需{item.point}积分</Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={async () => {
+                                        tools.Toast.toast('兑换成功！', 1)
+                                    }}
+                                    style={styles.pointConvert}>
+                                    <Text style={{color: '#fff', fontSize: 12}}>确认兑换</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    })
+                }
+                <View style={styles.pointTip}>
+                    <Text style={styles.pointTipTxt}> 提示：每个座位可选一张，兑换更多优惠券请前往积分商城 </Text>
+                </View>
+            </Card>
+        );
+    }
+
     return (
-        <View footer={renderButton()}
-            style={styles.containerMain}>
+        <View style={styles.container}>
             <TopMessageContainer minutes={minutes} seconds={seconds}/>
             <ScrollView>
-                {ticketOrderStatus !== Status.DEFAULT && (
-                    <>
-                        <TicketSummaryContainer/>
-                        <VoucherContainer/>
-                        {pointCoupons && pointCoupons.length > 0 ?
-                            <Card type="clear" style={[styles.container, {marginHorizontal: 10, padding: 10,}]}>
-                                <View style={{paddingVertical: 10}}>
-                                    <Text bold style={{fontSize: 15, color: '#000000'}}>积分兑换更多优惠券<Text
-                                        style={{fontSize: 13, color: '#8e8e8e'}}>（当前可用积分{userInfo.point}）</Text></Text>
-                                </View>
-                                {
-                                    pointCoupons.map((item, index) => {
-                                        return (
-                                            <View key={index} style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'center',
-                                                marginHorizontal: 10,
-                                                height: 60,
-                                                marginTop: 15,
-                                                borderWidth: 1 / 2,
-                                                borderColor: '#e5e5e5',
-                                                borderRadius: 5,
-                                                // padding: 20
-                                            }}>
-                                                <View style={{
-                                                    width: width - 60,
-                                                    flexDirection: 'row',
-                                                    alignItems: 'center',
-                                                }}>
-                                                    <Text bold style={{
-                                                        width: (width - 70) / 4,
-                                                        textAlign: 'center',
-                                                        fontSize: 25,
-                                                        color: '#e5e5e5'
-                                                    }}>券</Text>
-                                                    <View style={{
-                                                        width: (width - 60) * 3 / 5.2,
-                                                        paddingLeft: width * 0.075
-                                                    }}>
-                                                        <Text
-                                                            style={{color: '#fc5869', fontSize: 14}}>{item.cpnNm}</Text>
-                                                        <Text style={{
-                                                            color: '#8e8e8e',
-                                                            marginTop: 7
-                                                        }}>需{item.point}积分</Text>
-                                                    </View>
-                                                </View>
-                                                <TouchableOpacity
-                                                    onPress={async () => {
-                                                        if (current?.ticketOrder?.ticket?.movie?.activity === "1") {
-                                                            tools.alert('此兑换券该场次不可用，是否兑换？', '温馨提示', [{
-                                                                text: '否',
-                                                                onPress: null,
-                                                                style: 'cancel'
-                                                            }, {
-                                                                text: '是', onPress: async () => {
-                                                                    try {
-                                                                        const data = await bizstream.customer.changePointToCoupon(item.id, current?.cinema?.hqCode)
-                                                                        if (data.code === 200) {
-                                                                            tools.Toast.toast('兑换成功，请去优惠券中选择使用', 1)
-                                                                            getCounpons()
-                                                                            initData()
-                                                                        } else {
-                                                                            tools.Toast.toast(data.message, 1)
-                                                                        }
-                                                                    } catch (error) {
-                                                                        console.log(error)
-                                                                    }
-                                                                    goBack()
-                                                                },
-                                                            }])
-                                                        } else {
-                                                            try {
-                                                                const data = await bizstream.customer.changePointToCoupon(item.id, current?.cinema?.hqCode)
-                                                                if (data.code === 200) {
-                                                                    tools.Toast.toast('兑换成功，请去优惠券中选择使用', 1)
-                                                                    getCounpons()
-                                                                    initData()
-                                                                } else {
-                                                                    tools.Toast.toast(data.message, 1)
-                                                                }
-                                                            } catch (error) {
-                                                                console.log(error)
-                                                            }
-                                                        }
-                                                    }}
-                                                    style={{
-                                                        position: 'absolute',
-                                                        bottom: Platform.OS === 'ios' ? 10 : 10,
-                                                        right: 10,
-                                                        paddingHorizontal: 7,
-                                                        paddingVertical: 4,
-                                                        borderRadius: 20,
-                                                        backgroundColor: '#fc5869'
-                                                    }}>
-                                                    <Text style={{color: '#ffffff'}}>确认兑换</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    })
-                                }
-                                <View style={{
-                                    marginTop: 25,
-                                    height: 40,
-                                    borderTopWidth: 1,
-                                    borderTopColor: '#e5e5e5',
-                                    justifyContent: 'center'
-                                }}>
-                                    <Text
-                                        style={{color: '#fc5869', paddingLeft: 10}}> 提示：每个座位可选一张，兑换更多优惠券请前往积分商城 </Text>
-                                </View>
-                            </Card> : null}
-                        <TicketTotalContainer/>
-                        <PaymentBannerContainer
-                            seeMore={() => navigation.navigate('FriendCardListScreen')}
-                        />
-                        <ShopContainer items={featuredProducts}/>
-                    </>
-                )}
-                {ticketOrderStatus === Status.DEFAULT && (
-                    <View
-                        style={{
-                            marginHorizontal: 12,
-                            borderRadius: 3,
-                            padding: 10,
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginBottom: 10,
-                            height: 45,
-                            flexDirection: 'row',
-                            backgroundColor: '#fff',
-                        }}>
-                        <Text style={{color: '#181818', fontSize: 14}}>当前提货影城</Text>
-                        <Text style={{color: '#fc5869', fontSize: 14, fontWeight: 'bold'}}>
-                            {current.cinema.name}
-                        </Text>
-                    </View>
-                )}
-                {current?.productOrder?.product?.products?.length > 0 && (
-                    <ShopCartContainer/>
-                )}
-                {current?.productOrder?.product?.products?.length > 0 && (
-                    <ShopCouponContainer/>
-                )}
-                {ticketOrderStatus === Status.DEFAULT && pointCoupons && pointCoupons.length > 0 ?
-                    <Card type="clear" style={[styles.container, {marginHorizontal: 10, padding: 10,}]}>
-                        <View style={{paddingVertical: 10}}>
-                            <Text bold style={{fontSize: 15, color: '#000000'}}>积分兑换更多优惠券<Text
-                                style={{fontSize: 13, color: '#8e8e8e'}}>（当前可用积分{userInfo.point}）</Text></Text>
-                        </View>
-                        {
-                            pointCoupons.map((item, index) => {
-                                return (
-                                    <View key={index} style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        marginHorizontal: 10,
-                                        height: 60,
-                                        marginTop: 15,
-                                        borderWidth: 1 / 2,
-                                        borderColor: '#e5e5e5',
-                                        borderRadius: 5,
-                                        // padding: 20
-                                    }}>
-                                        <View style={{width: width - 60, flexDirection: 'row', alignItems: 'center',}}>
-                                            <Text bold style={{
-                                                width: (width - 70) / 4,
-                                                textAlign: 'center',
-                                                fontSize: 25,
-                                                color: '#e5e5e5'
-                                            }}>券</Text>
-                                            <View style={{width: (width - 60) * 3 / 5.2, paddingLeft: width * 0.075}}>
-                                                <Text style={{color: '#fc5869', fontSize: 14}}>{item.cpnNm}</Text>
-                                                <Text style={{color: '#8e8e8e', marginTop: 7}}>需{item.point}积分</Text>
-                                            </View>
-                                        </View>
-                                        <TouchableOpacity
-                                            onPress={async () => {
-                                                try {
-                                                    const data = await bizstream.customer.changePointToCoupon(item.id, current?.cinema?.hqCode)
-                                                    if (data.code === 200) {
-                                                        tools.Toast.toast('兑换成功！', 1)
-                                                        getCounpons()
-                                                        initData()
-                                                    } else {
-                                                        tools.Toast.toast(data.message, 1)
-                                                    }
-                                                } catch (error) {
-                                                    console.log(error)
-                                                }
-                                            }}
-                                            style={{
-                                                position: 'absolute',
-                                                bottom: Platform.OS === 'ios' ? 10 : 10,
-                                                right: 10,
-                                                paddingHorizontal: 7,
-                                                paddingVertical: 4,
-                                                borderRadius: 20,
-                                                backgroundColor: '#fc5869'
-                                            }}>
-                                            <Text style={{color: '#ffffff'}}>确认兑换</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                )
-                            })
-                        }
-                        <View style={{
-                            marginTop: 25,
-                            height: 40,
-                            borderTopWidth: 1,
-                            borderTopColor: '#e5e5e5',
-                            justifyContent: 'center'
-                        }}>
-                            <Text style={{color: '#fc5869', paddingLeft: 10}}> 提示：每个座位可选一张，兑换更多优惠券请前往积分商城 </Text>
-                        </View>
-                    </Card> : null}
+                <>
+                    <TicketSummaryContainer data={route.params}/>
+                    <VoucherContainer data={route.params}/>
+                    {buildPointCoupons()}
+                    <TicketTotalContainer data={route.params}/>
+                    <PaymentBannerContainer
+                        seeMore={() => navigation.navigate('FriendCardListScreen')}
+                    />
+                    <ShopContainer items={featuredProducts}/>
+                </>
+                {/*<ShopCartContainer/>*/}
+                <ShopCouponContainer/>
+
                 {current?.productOrder?.product?.products?.length > 0 && (
                     <ShopTotalContainer/>
                 )}
                 <CGVPaymentMethodContainer list={payStatusList}/>
-                <ThirdPartyPaymentMethodContainer/>
+                {/*<ThirdPartyPaymentMethodContainer/>*/}
                 <View style={{height: 60}}/>
             </ScrollView>
         </View>
@@ -854,12 +539,58 @@ const PaymentScreen = ({
 }
 
 const styles = StyleSheet.create({
-    containerMain: {
+    container: {
         flex: 1,
         backgroundColor: '#EDEDED',
     },
     row: {
         flexDirection: 'row',
+    },
+    pointCard: {
+        flex: 1,
+        backgroundColor: '#fff',
+        marginHorizontal: 10,
+        padding: 10,
+        borderRadius: 3,
+    },
+    point: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 10,
+        height: 60,
+        marginTop: 15,
+        borderWidth: 1 / 2,
+        borderColor: '#e5e5e5',
+        borderRadius: 5,
+    },
+    pointConvert: {
+        position: 'absolute',
+        bottom: Platform.OS === 'ios' ? 10 : 10,
+        right: 10,
+        paddingHorizontal: 7,
+        paddingVertical: 4,
+        borderRadius: 20,
+        backgroundColor: '#fc5869'
+    },
+    cpnTxt: {
+        color: '#fc5869',
+        fontSize: 14
+    },
+    pointTxt: {
+        color: '#8e8e8e',
+        marginTop: 7
+    },
+    pointTip: {
+        marginTop: 25,
+        height: 40,
+        borderTopWidth: 1,
+        borderTopColor: '#e5e5e5',
+        justifyContent: 'center',
+        paddingLeft: 10
+    },
+    pointTipTxt: {
+        color: '#fc5869',
+        fontSize: 13
     },
     input: {
         borderColor: '#EBEBEB',

@@ -373,7 +373,6 @@ const SelectSeatScreen = ({
             tools.Toast.toast('请选择座位', 1)
             return
         }
-        tools.loading()
         navigation.navigate('PaymentScreen',orderParams)
     }
 

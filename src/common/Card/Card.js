@@ -8,7 +8,6 @@ import {
   TouchableNativeFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {ThemeContext} from '../../theme';
 import {DIMENS} from '../../constants';
 
 const OUTLINE = 'outline';
@@ -58,11 +57,10 @@ const Card = ({
   children,
 }) => {
   const ViewGroup = onPress ? TouchReceptor : View;
-  const {theme} = useContext(ThemeContext);
 
   return (
     <ViewGroup onPress={onPress} activeOpacity={0.7}>
-      <View style={StyleSheet.flatten([styles.conatiner(type, theme), style])}>
+      <View style={StyleSheet.flatten([styles.container, style])}>
         {children}
       </View>
     </ViewGroup>
@@ -70,13 +68,13 @@ const Card = ({
 };
 
 const styles = {
-  conatiner: (type, theme) => ({
-    borderWidth: type === OUTLINE ? 1 : 0,
-    borderColor: theme.borderColor,
-    borderRadius: DIMENS.borderRadius,
-    backgroundColor: theme.surfaceColor,
+  container: {
+    borderWidth: 0,
+    borderColor: '#fff',
+    borderRadius: 3,
+    backgroundColor: '#fff',
     marginBottom: 7,
-  }),
+  },
 };
 
 Card.propTypes = propTypes;

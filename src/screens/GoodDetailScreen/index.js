@@ -88,14 +88,12 @@ const computeId = (item = {}) => {
 const GoodDetailScreen = ({
                               navigation: {navigate, goBack},
                               thatCd,
-                              current,
-                              items,
                               getDscResult: _getDscResult,
                               route,
                               cartTotalQuantity,
                               addToCart: _addToCart
                           }) => {
-    const {update, type, where, item} = route.params || {}
+    const {update, type, item} = route.params || {}
     const [pics, setPics] = useState([])
     const [goodsDetail, setGoodsDetail] = useState(item)
     const [comments, setComments] = useState([])

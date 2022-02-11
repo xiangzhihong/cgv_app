@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import {View, Text, Image,TouchableOpacity, StyleSheet,} from 'react-native';
 import Card from '../../../../common/Card/Card';
 
-const PaymentBannerContainer = ({ current, seeMore }) => {
+const PaymentBannerContainer = ({ seeMore }) => {
   return (
     <Card type="clear" style={styles.container}>
       <View style={styles.sectionTitle}>

@@ -8,13 +8,11 @@ import {AESUtils, tools} from '../../utils'
 import apiRequest from "../../api";
 
 const GoodListScreen = ({
-                            state,
                             current,
                             route,
                             navigation: {navigate, goBack},
                             createTicketOrder: _createTicketOrder,
                             getDscResult: _getDscResult,
-                            isLoggedIn,
                             items,
                             addToCart: _addToCart,
                             cartTotalQuantity,

@@ -7,7 +7,7 @@ const TicketTotalContainer = ({data}) => {
     return (
         <Card type="clear" style={styles.container}>
             <View>
-                <SectionHeader title="票价小计："  isRenderRight isRenderButton={false} rightText={`¥${data.cinema.money.price}`}/>
+                <SectionHeader title="票价小计："   isRenderButton={false} rightText={`¥${data.cinema.money.price}`}/>
                 <View style={styles.discountLine} >
                     <Text  style={styles.discountName}>已优惠</Text>
                     <Text style={styles.discountAmount}>-￥0</Text>

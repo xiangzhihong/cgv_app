@@ -24,19 +24,16 @@ import {
     TopMessageContainer, VoucherContainer,
 } from './containers'
 import {PaymentBottomBtn} from './components'
-import {bizstream} from '../../bizstream'
-import {AESUtils, navigate, tools} from '../../utils'
+import {tools} from '../../utils'
 import {goBack} from '../../utils/rootNavigation'
 import couponPoint from '../../mock/coupon.json'
-
-const {width, height} = Dimensions.get('window')
+import apiRequest from "../../api";
 
 const endTime = new Date().getTime() + (14 * 60 + 59) * 1000  //倒计时截止时间
 
 const PaymentScreen = ({
                            route,
                            current,
-                           payType,
                            selectedCinema,
                            currentRouteName,
                            navigation,
@@ -52,128 +49,63 @@ const PaymentScreen = ({
                            getDscResult: _getDscResult,
                            editMobileNumber: _editMobileNumber,
                            resetCheckoutProductState: _resetCheckoutProductState,
-                           featuredProducts,
                            updateUserInfoInRedux: _updateUserInfoInRedux
                        }) => {
-    console.log(route.params)
     const {
         cinema, lang, movCd, movFmt, movId, movName, movUrl, screenName, seats, srmCd,
         thatAddr, thatCd, thatId, thatName, thatParty, type
     } = route.params || {}
-    const [pointCoupons, setPointCoupons] = React.useState([])
     const [minutes, setMinutes] = useState('14')
     const [seconds, setSeconds] = useState('59')
+    const [pointCoupons, setPointCoupons] = React.useState([])
+    const [featuredProducts, setFeaturedProducts] = React.useState([])
     const [payStatusList, setPayStatusList] = useState([]);
-    global.type = 'movie'
-
     let interval = useRef()
-    let clickflag = false;
 
     const clearTimer = () => interval.current && clearInterval(interval.current)
 
     useEffect(() => {
-        // payAttrFun()
-        // getGoodList()
         getCouponByPoint()
-        // if (!type) {
-        //     baseFun()
-        // }
-        // if (type) {
-        //     getAvailableCoupons()
-        // }
-
+        getGoodList()
     }, [])
 
     useEffect(() => {
         interval.current = setInterval(function () {
-            getAcquisitionCountdown()
+            getTimeCountdown()
         }, 1000)
         return clearTimer
     }, [])
 
-    useEffect(() => {
-        initializationBackHandler()
-        return comWillUnmount
-    }, [type])
-
-    const baseFun = (coupons = [], obj) => {
-        let prodcutList = []
-        current.productOrder.product.products.map((data) => {
-            let o = {};
-            if (data.subProduct && data.subProduct.length > 0) {
-                o = {
-                    id: data.productCd,
-                    prodCd: data.productId,
-                    qty: data.quantity,
-                    subprods: data.subProduct.map((ite) => {
-                        return {
-                            id: ite.productCd,
-                            prodCd: ite.productId,
-                            qty: ite.quantity,
-                            productAssocCd: ite.productAssocCd,
-                        };
-                    }),
-                };
-            } else {
-                o = {
-                    id: data.productCd,
-                    prodCd: data.productId,
-                    qty: data.quantity,
-                };
-            }
-            for (let i = data.quantity; i > 0; i--) {
-                prodcutList.push(o);
-            }
-        });
-        _getDscResult({
-            orderChnl: '07',
-            pointUseYn: '0',
-            orderId: current.onlineOrderNo,
-            prods: prodcutList,
-            coupons,
-            vouchers: [],
-            ...obj
-        });
-    }
-
-    const initializationBackHandler = () => {
-        if (Platform.OS === 'android') {
-            BackHandler.addEventListener('hardwareBackPress', cancelFunC)
-        }
-    }
-
-    const payAttrFun = async () => {
-        const data = await bizstream.customer.payAttr(selectedCinema?.facilityId)
-        setPayStatusList(data)
-    }
-
-    const getCouponByPoint = async () => {
+    async function getCouponByPoint() {
         const data = couponPoint
-        console.log('couponPoint:' + couponPoint)
         setPointCoupons(data.data)
     }
 
-    const cancelFunC = () => {
-        if (currentRouteName === 'PaymentScreen') {
-            clearInterval(interval.current)
-            cancelOrder()
-            goBackRefresh(2, orderId)
-            navigation.goBack();
-            return true
+    async function getGoodList() {
+        let baseUrl = '/product/good/list-all'
+        let param = {
+            prodCatalogCd: 1201,
+            facilityCd: 188,
+            showInSelect: 1,
+            ishotgoods:1
+        };
+        const res = await apiRequest.post(baseUrl, param)
+        let contents=res.content
+        if(contents && contents.length>0){
+            // let products={}
+            // contents.map((item, index) => {
+            //     products.push(item.goodList)
+            // })
+            // console.log(products)
+            setFeaturedProducts(contents[0].goodList)
         }
     }
 
-    const comWillUnmount = () => {
-        BackHandler.removeEventListener('hardwareBackPress', cancelFunC)
-    }
-
-
-    const getAcquisitionCountdown = () => {
+    const getTimeCountdown = () => {
         const newTime = new Date().getTime()
-        console.log('getAcquisitionCountdown: ' + endTime - newTime)
         if (endTime - newTime > 0) {
             const time = (endTime - newTime) / 1000
-            // 获取天、时、分、秒
+            //倒计时天、时、分、秒
             const day = parseInt(time / (60 * 60 * 24))
             const hou = parseInt((time % (60 * 60 * 24)) / 3600)
             const min = parseInt(((time % (60 * 60 * 24)) % 3600) / 60)
@@ -181,7 +113,6 @@ const PaymentScreen = ({
             setMinutes(timeFormat(min))
             setSeconds(timeFormat(sec))
         } else {
-            // 待付款已结束，全部设置为'00'
             clearInterval(interval.current)
             // navigation.goBack();
             tools.alert(
@@ -191,7 +122,7 @@ const PaymentScreen = ({
                     {
                         text: '重新下单',
                         onPress: () => {
-                            navigation.goBack()
+                            goBack()
                         },
                     },
                 ],
@@ -199,261 +130,18 @@ const PaymentScreen = ({
                 '',
                 false,
             )
+            // 待付款已结束，全部设置为'00'
             setMinutes('00')
             setSeconds('00')
         }
     }
-
 
     const timeFormat = (param) => {
         return param < 10 ? `0${param}` : param
     }
 
     const placeOrder = async () => {
-        if (clickflag) {
-            return;
-        }
-        clickflag = true;
-        clearTimer()
-        clearInterval(interval.current)
-        let seats = []
-        seats =
-            current.ticketOrder &&
-            current.ticketOrder.ticket &&
-            current.ticketOrder.ticket.seats &&
-            current.ticketOrder.ticket.seats.length > 0 &&
-            current.ticketOrder.ticket.seats.map((item) => {
-                item.ibkSeatCd = item.posSeatCode
-                item.seatNm = item.seatName
-                item.seatGrdCd = item.seatGrade
-                return item
-            })
 
-        const arr = []
-        current.productOrder &&
-        current.productOrder.product &&
-        current.productOrder.product.products &&
-        current.productOrder.product.products.length > 0 &&
-        current.productOrder.product.products.map((item) => {
-            const o =
-                item.subProduct && item.subProduct.length
-                    ? {
-                        id: item.productCd,
-                        prodCd: item.productId,
-                        qty: item.quantity,
-                        subprods: item.subProduct.map((ite) => {
-                            return {
-                                id: ite.productCd,
-                                prodCd: ite.productId,
-                                productAssocCd: ite.productAssocCd,
-                                qty: ite.quantity,
-                            }
-                        }),
-                    }
-                    : {
-                        id: item.productCd,
-                        prodCd: item.productId,
-                        qty: item.quantity,
-                    }
-            arr.push(o)
-        })
-        let paymentInformation = {}
-        if (type) {
-            paymentInformation = {
-                platform: Platform.OS === 'ios' ? '01' : '02',
-                orderId: current.onlineOrderNo,
-                payType: current?.totalAmount === 0 ? null : Math.min(payType, 3),
-                thatCd: current.cinema.hqCode, // 本部影院代码（例如：'1011'）
-                sarftThatCd: current.cinema.sarftCode, // 广电总局影院代码（例如：'31182201'）
-                thatId: selectedCinema.facilityId, // 线上系统影院代码（例如：28）
-                thatParty: current.cinema.partyId, // 影院party代码（例如：481）
-                srmCd: current.cinema.srmCode, // 本部渠道代码（例如：'1096')
-                thatName: current.cinema.name, // 影院名称（例如：'上海安亭'）
-                thatAddr: current.cinema.address, // 影院地址
-                activityId: '', // 活动id
-                ordChn: 1, // 订单渠道 2小程序
-                openId: '', // 微信的openid
-                isMiniProgram: false, // 是否小程序
-                disSale: 'N', // 卖品是否开启促销
-                formId: '', // 小程序提交订单的formid
-                /**
-                 * 购票
-                 */
-                screenCd: current.ticketOrder.screen.hqCode, // 本部影厅代码（例如：'0006'）
-                screenName: current.ticketOrder.screen.name, // 影厅名称
-                scnSchSeq: current.ticketOrder.ticket.schedule.code, // 排期号（例如：14561823）
-                movCd: current.ticketOrder.ticket.movie.hqCode, // 本部电影代码（例如：'10003626'）
-                movId: current.ticketOrder.ticket.movie.onlineId, // 线上系统电影（例如：3618）
-                sarftMovCd: current.ticketOrder.ticket.movie.sarftCode, // 广电总局电影代码（例如：''）. brandname
-                movName: current.ticketOrder.ticket.movie.title, // 电影名称（例如：'南方车站的聚会'）
-                movUrl: current.ticketOrder.ticket.movie.image, // 电影图片地址（例如：'/aaa.jpg'）
-                movFmt: current.ticketOrder.ticket.movie.format, // timer.type.split('/')[1], //电影制式名称（例如：'2D'）
-                lang: current.ticketOrder.ticket.movie.language, // timer.type.split('/')[0], //电影的语言（例如：'中文'）
-                seats,
-                coupons: [...current.ticketOrder.ticketCoupons],
-                orderChnl: '07',
-                vouchers: current.ticketOrder.vouchers,
-                gftCardNm: current.paymentMethod.memberCard.cardName,
-                gftCertNo: current.paymentMethod.memberCard.cardNo,
-                gftAuthNo: current.paymentMethod.memberCard.cardType,
-                gftCertPrice: current.paymentMethod.memberCard.paymentAmount,
-                pointUseYn: current.paymentMethod.point.useYn,
-                mbrNm: current.ticketOrder.memberCard.memberCardName,
-                mbrCardNo: current.ticketOrder.memberCard.memberCardNo,
-                mbrCardPrice: current.ticketOrder.memberCard.memberCardAmount,
-                mbrCardType: current.ticketOrder.memberCard.memberCardType,
-                mbrCardPwd: current.ticketOrder.memberCard.memberCardPassword,
-                prods: arr,
-                mobile: AESUtils.AES(current.mobileNo),
-            }
-
-        } else {
-            paymentInformation = {
-                platform: Platform.OS === 'ios' ? '01' : '02',
-                orderId: current.onlineOrderNo,
-                payType: current?.totalAmount === 0 ? null : Math.min(payType, 3),
-                ordChn: 1, // 订单渠道 2小程序
-                coupons: [...current.ticketOrder.ticketCoupons],
-                orderChnl: '07',
-                mobile: AESUtils.AES(current.mobileNo),
-                gftCardNm: current.paymentMethod.memberCard.cardName,
-                gftCertNo: current.paymentMethod.memberCard.cardNo,
-                gftAuthNo: current.paymentMethod.memberCard.cardType,
-                gftCertPrice: current.paymentMethod.memberCard.paymentAmount,
-                pointUseYn: current.paymentMethod.point.useYn,
-                mbrNm: current.ticketOrder.memberCard.memberCardName,
-                mbrCardNo: current.ticketOrder.memberCard.memberCardNo,
-                mbrCardPrice: current.ticketOrder.memberCard.memberCardAmount,
-                mbrCardType: current.ticketOrder.memberCard.memberCardType,
-                mbrCardPwd: current.ticketOrder.memberCard.memberCardPassword,
-            }
-        }
-        try {
-            const data = await bizstream.customer.createPayment(paymentInformation)
-            clickflag = false;
-            if (data.RS_CD === '00') {
-                if (current.totalAmount) {
-                    if (payType === 1) {
-                        const isSupported = await Wxpay.isSupported()
-                        if (isSupported) {
-                            const param = {
-                                appId: data.sub_appid,
-                                partnerId: data.sub_mch_id,
-                                prepayId: data.prepayid,
-                                nonceStr: data.noncestr,
-                                timeStamp: data.timestamp,
-                                package: data.package1,
-                                sign: data.an_sign,
-                            }
-                            const result = await Wxpay.pay(
-                                Platform.OS === 'ios' ? param : JSON.stringify(param),
-                            )
-                            if (result.errCode === 0) {
-                                clearInterval(interval.current)
-                                navigate('PaySuccessScreen', {
-                                    title: '支付成功',
-                                    id: paymentInformation.orderId,
-                                    goBackStatus: true,
-                                    type,
-                                })
-                            } else {
-                                tools.Toast.toast('订单支付失败', 1)
-                            }
-                        } else {
-                            tools.Toast.toast('请安装微信', 1)
-                        }
-                    } else if (payType === 2) {
-                        const response = await aliPay.pay(data.body)
-                        if (response?.code === '9000' || response?.[0].resultStatus === '9000') {
-                            clearInterval(interval.current)
-                            setMinutes('00')
-                            setSeconds('00')
-                            navigate('PaySuccessScreen', {
-                                title: '支付成功',
-                                id: paymentInformation.orderId,
-                                goBackStatus: true,
-                                type,
-                            })
-                        } else {
-                            tools.Toast.toast('订单支付失败', 1)
-                        }
-                    } else if (payType === 3) {
-                        UPPay.pay(data.TN, true, '')
-                            .then((resp) => {
-                                clearInterval(interval.current)
-
-                                navigate('PaySuccessScreen', {
-                                    title: '支付成功',
-                                    id: paymentInformation.orderId,
-                                    goBackStatus: true,
-                                    type,
-                                })
-                            })
-                            .catch((err) => {
-                                tools.Toast.toast('订单支付失败', 1)
-                            })
-                    } else if (payType === 4) {
-                        UPPay.pay(data.TN, true, 'merchant.cn.com.cgv.m1011')
-                            .then((resp) => {
-                                clearInterval(interval.current)
-                                navigate('PaySuccessScreen', {
-                                    title: '支付成功',
-                                    id: paymentInformation.orderId,
-                                    goBackStatus: true,
-                                    type,
-                                })
-                            })
-                            .catch(({code, message, ...rest}) => {
-                                tools.Toast.toast('订单支付失败', 1)
-                            })
-                    } else if (payType) {
-                        UPPay.pay(data.TN, true, `${payType}`.substr(2, 2)).then(
-                            (resp) => {
-                                clearInterval(interval.current)
-                                navigate('PaySuccessScreen', {
-                                    title: '支付成功',
-                                    id: paymentInformation.orderId,
-                                    goBackStatus: true,
-                                    type,
-                                })
-                            },
-                            (err) => {
-                                tools.Toast.toast('订单支付失败', 1)
-                            },
-                        )
-                    }
-                } else {
-                    clearInterval(interval.current)
-                    navigate('PaySuccessScreen', {
-                        title: '支付成功',
-                        id: paymentInformation.orderId,
-                        goBackStatus: true,
-                        type,
-                    })
-                }
-            } else {
-                tools.Toast.toast('订单支付失败', 1)
-            }
-        } catch (e) {
-            // tools.Toast.toast('订单支付失败',1)
-        }
-    }
-
-
-    const getGoodList = () => {
-        _getFeaturedProducts(selectedCinema.facilityId)
-    }
-
-    /**
-     * 查询特惠活动
-     */
-    const getPreActive = async () => {
-        const obj = {
-            thatCd: current.cinema.hqCode,
-            scnSchSeq: current.ticketOrder.ticket.schedule.code,
-            chnlNo: '05',
-        }
-        _getAvailablePromotions(obj)
     }
 
     const viewCont = () => {
@@ -476,7 +164,6 @@ const PaymentScreen = ({
             }
         />
     )
-
 
     function buildPointCoupons() {
         return (<Card type="clear" style={styles.pointCard}>
@@ -514,22 +201,15 @@ const PaymentScreen = ({
         <View style={styles.container}>
             <TopMessageContainer minutes={minutes} seconds={seconds}/>
             <ScrollView>
-                <>
-                    <TicketSummaryContainer data={route.params}/>
-                    <VoucherContainer data={route.params}/>
-                    {buildPointCoupons()}
-                    <TicketTotalContainer data={route.params}/>
-                    <PaymentBannerContainer
-                        seeMore={() => navigation.navigate('FriendCardListScreen')}
-                    />
-                    <ShopContainer items={featuredProducts}/>
-                </>
-                {/*<ShopCartContainer/>*/}
+                <TicketSummaryContainer data={route.params}/>
+                <VoucherContainer data={route.params}/>
+                {buildPointCoupons()}
+                <TicketTotalContainer data={route.params}/>
+                <PaymentBannerContainer
+                    seeMore={() => navigation.navigate('FriendCardListScreen')}
+                />
+                <ShopContainer items={featuredProducts}/>
                 <ShopCouponContainer/>
-
-                {current?.productOrder?.product?.products?.length > 0 && (
-                    <ShopTotalContainer/>
-                )}
                 <CGVPaymentMethodContainer list={payStatusList}/>
                 {/*<ThirdPartyPaymentMethodContainer/>*/}
                 <View style={{height: 60}}/>

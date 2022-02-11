@@ -4,13 +4,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import {navigate} from '../../../../utils'
 import httpConfig from "../../../../api/httpConfig";
 
-const ShopProductItem = ({
-                             item,
-                             add,
-                             goAdd
-                         }) => {
+const ShopProductItem = ({item, add, goAdd}) => {
     const CountBtns = () => (
-        <>
+        <View>
             <TouchableOpacity onPress={() => {
                 item.isVirtual === '1' ? navigate('GoodDetailScreen', {
                     type: 'movie',
@@ -19,9 +15,8 @@ const ShopProductItem = ({
                     update: (i) => goAdd(i)
                 }) : add()
             }}>
-                <AntDesign name="pluscircle" size={18} color={'#FC5869'} style={styles.plusIconStyle}/>
             </TouchableOpacity>
-        </>
+        </View>
     )
 
     return (

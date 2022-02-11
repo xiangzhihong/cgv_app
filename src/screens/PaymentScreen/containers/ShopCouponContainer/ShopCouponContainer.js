@@ -4,26 +4,20 @@ import Card from '../../../../common/Card/Card'
 import SectionHeader from '../../../../common/SectionHeader'
 import { navigate } from '../../../../utils'
 
-const ShopCouponContainer = ({ current, getUsableCouponsAndCardsForSchedule: _getUsableCouponsAndCardsForSchedule, getDscResult: _getDscResult }) => {
+const ShopCouponContainer = () => {
 
   return (
     <Card type="clear" style={styles.container}>
       <View>
         <SectionHeader title="商品优惠券" isRenderRight isRenderButton onClick={() => navigate('ModalCGVPayScreen', {
           confirm: (data)=> _getDscResult(data),
-          addCard: ()=> navigate('MyTicketsAddCashCouponScreen', { title: '添加优惠券', status: 1, refresh: ()=> _getUsableCouponsAndCardsForSchedule({thatCd: current.cinema.hqCode, srmCd: current.cinema.srmCode})
+          addCard: ()=> navigate('MyTicketsAddCashCouponScreen', { title: '添加优惠券', status: 1, refresh: ()=>{}
           }),
           status: 6,
           title: '使用商品优惠券',
           addCardTitle: '添加优惠券',
           mepty: '您还没有优惠券～'
         })}/>
-        {current?.productOrder?.shopTotal?.details?.map((item, index) => (
-          <View style={styles.discountLine} key={index}>
-            <Text type='subheading' style={styles.discountName}>{item.dsc_name}</Text>
-            <Text type='bodyheading' style={styles.discountAmount}>-￥{item.dsc_price}</Text>
-          </View>
-        ))}
       </View>
     </Card>
   )

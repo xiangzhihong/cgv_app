@@ -5,7 +5,7 @@ import httpConfig from "../../../api/httpConfig";
 
 const Main = ({item, addUpdate}) => (
     <View style={styles.main}>
-        <Image style={styles.cover} source={{uri: httpConfig.mediaUrl +item.mediumImageUrl}}/>
+        <Image style={styles.cover} source={{uri: httpConfig.mediaUrl +item.smallImageUrl}}/>
         <View style={styles.info}>
             <GoodInfo onLikePress={true} addFun={addUpdate} item={item} showTag={false} showPromotionText/>
         </View>

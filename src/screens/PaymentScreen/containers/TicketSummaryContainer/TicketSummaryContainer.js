@@ -7,7 +7,6 @@ import { TicketSummaryItem } from '../../components';
 import httpConfig from "../../../../api/httpConfig";
 
 const TicketSummaryContainer = ({ data }) => {
-   console.log(data)
   return (
     <Card type="clear" style={styles.container}>
       <TicketSummaryItem

@@ -1,0 +1,42 @@
+{
+  "data": [
+    {
+      "kbn": "wechat_yn",
+      "kbnName": "微信启用与否",
+      "useYn": "1",
+      "showYn": "1",
+      "desc": ""
+    },
+    {
+      "kbn": "unpay_yn",
+      "kbnName": "云闪付开启与否",
+      "useYn": "1",
+      "showYn": "1",
+      "desc": ""
+    },
+    {
+      "kbn": "alipay_yn",
+      "kbnName": "支付宝使用与否",
+      "useYn": "1",
+      "showYn": "1",
+      "desc": ""
+    },
+    {
+      "kbn": "except_yn",
+      "kbnName": "积分使用与否",
+      "useYn": "0",
+      "showYn": "0",
+      "desc": ""
+    },
+    {
+      "kbn": "point_use_yn",
+      "kbnName": "积分使用与否",
+      "useYn": "0",
+      "showYn": "1",
+      "desc": ""
+    }
+  ],
+  "code": 200,
+  "message": "OK",
+  "page": null
+}

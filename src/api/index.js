@@ -5,7 +5,7 @@ import baseConfig from './httpConfig';
 const headers = {
   'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 MicroMessenger/6.8.0(0x16080000) NetType/WIFI Language/en Branch/Br_trunk MiniProgramEnv/Mac',
   'Content-Type': 'application/json',
-  'sign': '87548979eef8557e16f2621799189095',   //SelectSessionScreen 选择场次需要
+  'sign': 'ee031773a0c1a50112784e93420217f9',   //SelectSessionScreen 选择场次需要
   'Referer': 'https://servicewechat.com/wx24b962fec75764c3/84/page-frame.html',
 };
 
@@ -26,7 +26,7 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use(response => {
   if (response.status === '200' || response.status === 200) {
-    return response.data.data || response.data;
+    return response.data.data || response.data || response;
   } else {
     throw Error(response.opt || '服务异常');
   }

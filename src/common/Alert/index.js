@@ -97,7 +97,7 @@ const Button = ({buttons, submitText, close}) => {
               key={index}>
               <Text
                 style={[
-                  isCancel ? styles.cancelText : styles.submitText,
+                  styles.submitText,
                   btnTextStyle,
                 ]}>
                 {text || (isCancel ? '取消' : '')}

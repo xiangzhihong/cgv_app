@@ -1,7 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {
-    BackHandler,
-    Dimensions,
     Platform,
     ScrollView,
     StyleSheet,
@@ -14,14 +12,14 @@ import {aliPay, UPPay, Wxpay} from '../../nativeBridge/pay'
 import {
     CGVPaymentMethodContainer,
     PaymentBannerContainer,
-    ShopCartContainer,
     ShopContainer,
     ShopCouponContainer,
-    ShopTotalContainer,
-    ThirdPartyPaymentMethodContainer,
+    ThirdPaymentContainer,
     TicketSummaryContainer,
     TicketTotalContainer,
-    TopMessageContainer, VoucherContainer,
+    TopMessageContainer,
+    VoucherContainer,
+    PayBottomContainer
 } from './containers'
 import {PaymentBottomBtn} from './components'
 import {tools} from '../../utils'
@@ -92,11 +90,6 @@ const PaymentScreen = ({
         const res = await apiRequest.post(baseUrl, param)
         let contents=res.content
         if(contents && contents.length>0){
-            // let products={}
-            // contents.map((item, index) => {
-            //     products.push(item.goodList)
-            // })
-            // console.log(products)
             setFeaturedProducts(contents[0].goodList)
         }
     }
@@ -140,30 +133,6 @@ const PaymentScreen = ({
         return param < 10 ? `0${param}` : param
     }
 
-    const placeOrder = async () => {
-
-    }
-
-    const viewCont = () => {
-        return (
-            <View>
-                <Text style={{color: '#181818', fontSize: 14, marginBottom: 10}}>
-                    {current.cinema.name}CGV影城
-                </Text>
-                <Text style={{color: '#9e9e9e'}}>{current.cinema.address}</Text>
-            </View>
-        )
-    }
-
-    const renderButton = () => (
-        <PaymentBottomBtn
-            placeOrder={() =>
-                tools.alert(viewCont, '请确认您的购买影城', [
-                    {text: '确认支付', onPress: () => placeOrder()},
-                ])
-            }
-        />
-    )
 
     function buildPointCoupons() {
         return (<Card type="clear" style={styles.pointCard}>
@@ -200,20 +169,20 @@ const PaymentScreen = ({
     return (
         <View style={styles.container}>
             <TopMessageContainer minutes={minutes} seconds={seconds}/>
-            <ScrollView>
+            <ScrollView style={{flex:1}}>
                 <TicketSummaryContainer data={route.params}/>
                 <VoucherContainer data={route.params}/>
                 {buildPointCoupons()}
                 <TicketTotalContainer data={route.params}/>
                 <PaymentBannerContainer
-                    seeMore={() => navigation.navigate('FriendCardListScreen')}
-                />
+                    seeMore={() => navigation.navigate('FriendCardListScreen')}/>
                 <ShopContainer items={featuredProducts}/>
                 <ShopCouponContainer/>
                 <CGVPaymentMethodContainer list={payStatusList}/>
-                {/*<ThirdPartyPaymentMethodContainer/>*/}
+                <ThirdPaymentContainer/>
                 <View style={{height: 60}}/>
             </ScrollView>
+            <PayBottomContainer data={route.params}/>
         </View>
     )
 }
@@ -245,7 +214,7 @@ const styles = StyleSheet.create({
     },
     pointConvert: {
         position: 'absolute',
-        bottom: Platform.OS === 'ios' ? 10 : 10,
+        bottom: 10,
         right: 10,
         paddingHorizontal: 7,
         paddingVertical: 4,

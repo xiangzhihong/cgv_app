@@ -8,8 +8,9 @@ import ShopCartContainer from './ShopCartContainer/ShopCartContainer';
 import ShopCouponContainer from './ShopCouponContainer/ShopCouponContainer';
 import ShopTotalContainer from './ShopTotalContainer/ShopTotalContainer';
 import CGVPaymentMethodContainer from './CGVPaymentMethodContainer/CGVPaymentMethodContainer';
-import ThirdPartyPaymentMethodContainer from './ThirdPartyPaymentMethodContainer/ThirdPartyPaymentMethodContainer';
+import ThirdPaymentContainer from './ThirdPaymentContainer/ThirdPaymentContainer';
 import GetTicketInfoContainer from './GetTicketInfoContainer/GetTicketInfoContainer';
+import PayBottomContainer from './PayBottomContainer/PayBottomContainer';
 
 export {
     TopMessageContainer,
@@ -22,6 +23,7 @@ export {
     ShopCouponContainer,
     ShopTotalContainer,
     CGVPaymentMethodContainer,
-    ThirdPartyPaymentMethodContainer,
-    GetTicketInfoContainer
+    ThirdPaymentContainer,
+    GetTicketInfoContainer,
+    PayBottomContainer
 };

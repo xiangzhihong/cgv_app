@@ -222,8 +222,6 @@ const GoodDetailScreen = ({
 
 
     const selectOk = () => {
-        // goBack()
-        // _addToCart(detail)
         tools.alert('购物车','加入购物车')
     }
 

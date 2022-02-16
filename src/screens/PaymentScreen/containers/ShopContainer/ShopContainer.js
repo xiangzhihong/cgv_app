@@ -5,7 +5,7 @@ import SectionHeader from '../../../../common/SectionHeader'
 import {ShopProductItem} from '../../components'
 import {navigate} from '../../../../utils'
 
-const ShopContainer = ({items, addToCart: _addToCart}) => {
+const ShopContainer = ({items}) => {
 
     return (
         <Card type="clear" style={styles.container}>
@@ -15,11 +15,7 @@ const ShopContainer = ({items, addToCart: _addToCart}) => {
                 horizontal
                 style={styles.cardList}
                 renderItem={({item}) => {
-                    return <ShopProductItem navigation item={item} add={() => {
-                        _addToCart(item)
-                    }} type='movie' goAdd={(i) => {
-
-                    }}/>
+                    return <ShopProductItem  item={item}  type='movie'/>
                 }}
                 keyExtractor={item => `key_${item.id}`}
                 showsHorizontalScrollIndicator={false}

@@ -4,16 +4,15 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import {navigate} from '../../../../utils'
 import httpConfig from "../../../../api/httpConfig";
 
-const ShopProductItem = ({item, add, goAdd}) => {
+const ShopProductItem = ({item}) => {
     const CountBtns = () => (
         <View>
             <TouchableOpacity onPress={() => {
-                item.isVirtual === '1' ? navigate('GoodDetailScreen', {
+                navigate('GoodDetailScreen', {
                     type: 'movie',
                     where: 'detail',
-                    item,
-                    update: (i) => goAdd(i)
-                }) : add()
+                    item
+                })
             }}>
             </TouchableOpacity>
         </View>
@@ -24,7 +23,6 @@ const ShopProductItem = ({item, add, goAdd}) => {
             type: 'movie',
             where: 'detail',
             item,
-            update: (i) => goAdd(i)
         })}>
             <Image style={styles.goodPic}
                    source={{uri: httpConfig.mediaUrl + item.smallImageUrl}}
@@ -34,11 +32,9 @@ const ShopProductItem = ({item, add, goAdd}) => {
                                            style={styles.productName}>{item?.productName}</Text> : null}
             </View>
             <View style={styles.priceLayer}>
-                {/* <Text allowFontScaling={false} style={styles.redText}>¥<Text allowFontScaling={false} style={styles.price}>{item.price}</Text></Text> */}
-                <Text type='body' allowFontScaling={false} style={styles.redText}>¥<Text type='bodyHeading'
-                                                                                         allowFontScaling={false}
-                                                                                         style={styles.redText}>{item.price}</Text></Text>
-                <Text type='body' allowFontScaling={false}
+                <Text allowFontScaling={false} style={styles.redText}>¥<Text allowFontScaling={false}
+                                                                             style={styles.redText}>{item.price}</Text></Text>
+                <Text allowFontScaling={false}
                       style={styles.originalPrice}>¥{parseFloat(item.guidePrice)}</Text>
                 <CountBtns/>
             </View>

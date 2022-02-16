@@ -213,7 +213,7 @@ const prompt = (
       text: '确认',
       onPress,
       btnTextStyle: {
-        backgroundColor: '#ffffff',
+        color: '#fff',
       },
       btnStyle: {
         backgroundColor: '#FC5869',

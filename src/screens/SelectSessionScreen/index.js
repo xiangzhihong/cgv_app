@@ -43,7 +43,6 @@ const SelectSessionScreen = (
     const getAdvert = async () => {
         const url = 'content/api/advert/query?channel=APP&advertType=APP_CCLB_AD&thatCd=' + thatCd;
         const res = await apiRequest.get(url);
-        console.log(res)
         setAdvertData({title: res[0]?.adtype, desc: res[0]?.advertText})
     }
 

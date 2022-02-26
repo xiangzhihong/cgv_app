@@ -2,16 +2,17 @@ import React, {useEffect} from 'react'
 import {View, TouchableOpacity, Text, Image, Dimensions, StyleSheet, ScrollView} from 'react-native'
 import Carousel from 'react-native-snap-carousel'
 import TipCard from '../../common/TipCard'
-import Empty from '../../common/Empty'
 import TopAddress from './containers/TopAddressContainer'
 import NoticeContainer from '../../common/NoticeContainer/NoticeContainer'
 import TicketListContainer from './containers/TicketListContainer'
 import DiscountItem from './components/DiscountItem'
 import ListHeader from '../MovieAndCinemaScreen/components/ListHeader'
-import {navigate, tools} from '../../utils'
-import {goBack} from '../../utils/rootNavigation'
 import apiRequest from "../../api";
 import httpConfig from "../../api/httpConfig";
+import moves from '../../mock/moveByCinema.json'
+import scndysRes from '../../mock/moveScndys.json'
+import schedule from '../../mock/movePrday.json'
+
 
 let carousel = null
 
@@ -46,20 +47,15 @@ const SelectSessionScreen = (
         setAdvertData({title: res[0]?.adtype, desc: res[0]?.advertText})
     }
 
-    const seatCountPos = async () => {
-        let baseUrl = '/order/nonepay/count'
-        const res = await apiRequest.post(baseUrl)
-        setSeatCount(res.nonepay_cnt)
-    }
-
     const getMoviesByCinema = async () => {
         //https://prd-api.cgv.com.cn/product/plans/thats/movies?prThatCd=1166&chnlNo=05
-        let baseUrl = '/product/plans/thats/movies'
-        let param = {
-            prThatCd: thatCd,
-            chnlNo: '05',
-        };
-        const res = await apiRequest.get(baseUrl, param)
+        // let baseUrl = '/product/plans/thats/movies'
+        // let param = {
+        //     prThatCd: thatCd,
+        //     chnlNo: '05',
+        // };
+        // const res = await apiRequest.get(baseUrl, param)
+        const res = moves.data
         if (res.length > 0) {
             setMovies(res)
             let firstData
@@ -77,13 +73,14 @@ const SelectSessionScreen = (
     }
 
     const getSchedules = async (parentMovCd) => {
-        let baseUrl = '/product/plans/scndys'
-        let param = {
-            prMovCd: parentMovCd,
-            prThatCd: thatCd,
-            chnlNo: '05',
-        };
-        const res = await apiRequest.get(baseUrl, param)
+        // let baseUrl = '/product/plans/scndys'
+        // let param = {
+        //     prMovCd: parentMovCd,
+        //     prThatCd: thatCd,
+        //     chnlNo: '05',
+        // };
+        // const res = await apiRequest.get(baseUrl, param)
+        const res = scndysRes.data
         setScndys(res || [])
         const obj = {}
         res?.map(item => obj[item.scnDy] = [])
@@ -105,14 +102,15 @@ const SelectSessionScreen = (
         const newSchedul = Object.assign({}, schedul)
         newSchedul[pDate] = []
         setSchedul(newSchedul)
-        let baseUrl = '/product/plans/thats/movies'
-        let param = {
-            prDay: pDate,
-            prMovCd: parentMovCd,
-            prThatCd: thatCd,
-            chnlNo: '05',
-        };
-        const res = await apiRequest.get(baseUrl, param)
+        // let baseUrl = '/product/plans/thats/movies'
+        // let param = {
+        //     prDay: pDate,
+        //     prMovCd: parentMovCd,
+        //     prThatCd: thatCd,
+        //     chnlNo: '05',
+        // };
+        // const res = await apiRequest.get(baseUrl, param)
+        const res= schedule.data
         const newSchedulData = Object.assign({}, schedul)
         newSchedulData[pDate] = res
         setSchedul(newSchedulData)

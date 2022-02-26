@@ -13,6 +13,7 @@ import {canSelect} from '../../utils/seat'
 import {goBack} from '../../utils/rootNavigation'
 import apiRequest from "../../api";
 import httpConfig from "../../api/httpConfig";
+import seatsList from "../../mock/seats.json";
 
 const Left = new Animated.Value(0)
 const {width} = Dimensions.get('window')
@@ -77,36 +78,6 @@ const SelectSeatScreen = ({
         return clearTimer
     }, [])
 
-
-    const goBackRefresh = (type, orderId) => {
-        if (type) {
-            tools.alert(
-                '您的订单已取消，请重新选座！',
-                undefined,
-                [{
-                    text: '关闭', onPress: () => {
-                        goBack()
-                        reloadNew()
-                    }
-                }],
-                {},
-                '',
-                false,
-            )
-        } else {
-            reloadNew()
-        }
-    }
-
-    const reloadNew = () => {
-        setCardPrice(0)
-        setPrice(0)
-        setSelected([])
-        getSeats(screenCd, scnSchSeq)
-        getSeatAdvise()
-        getFacilityTipList()
-    }
-
     async function getSeenPeo() {
         let baseUrl = '/party/api/getPropertyGetByPropertyId?resourceId=real.name.system&propertyId=real.name.system'
         const data = await apiRequest.get()(baseUrl)
@@ -138,7 +109,8 @@ const SelectSeatScreen = ({
             prSarftThatCd: sarftThatCd,
             scnSchSeq: scnSchSeq,
         };
-        const res = await apiRequest.post(baseUrl, param)
+        // const res = await apiRequest.post(baseUrl, param)
+        const res=seatsList
         setSeatList(res.otp_seat)
         setSeatGrdPrcs(res.seatGrdPrcs)
     }

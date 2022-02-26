@@ -85,11 +85,11 @@ const PaymentScreen = ({
             prodCatalogCd: 1201,
             facilityCd: 188,
             showInSelect: 1,
-            ishotgoods:1
+            ishotgoods: 1
         };
         const res = await apiRequest.post(baseUrl, param)
-        let contents=res.content
-        if(contents && contents.length>0){
+        let contents = res.content
+        if (contents && contents.length > 0) {
             setFeaturedProducts(contents[0].goodList)
         }
     }
@@ -107,7 +107,6 @@ const PaymentScreen = ({
             setSeconds(timeFormat(sec))
         } else {
             clearInterval(interval.current)
-            // navigation.goBack();
             tools.alert(
                 '订单超时取消，请重新下单',
                 '温馨提示',
@@ -169,7 +168,7 @@ const PaymentScreen = ({
     return (
         <View style={styles.container}>
             <TopMessageContainer minutes={minutes} seconds={seconds}/>
-            <ScrollView style={{flex:1}}>
+            <ScrollView style={{flex: 1}}>
                 <TicketSummaryContainer data={route.params}/>
                 <VoucherContainer data={route.params}/>
                 {buildPointCoupons()}

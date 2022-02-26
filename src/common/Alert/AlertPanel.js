@@ -22,7 +22,6 @@ export const ShareBody = ({data}) => {
         <Text style={styles.text}>x1</Text>
         <Text style={styles.text}>¥{data}</Text>
       </View>
-
     </View>
   );
 };

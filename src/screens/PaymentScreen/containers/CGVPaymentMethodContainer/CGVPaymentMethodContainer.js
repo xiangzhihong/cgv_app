@@ -27,17 +27,13 @@ const CGVPaymentMethodContainer = ({
                     <AntDesign name="right" style={styles.rightIcon}/>
                 </TouchableOpacity>
                 {current?.paymentMethod?.memberCard?.giftCardAmt ? <View style={styles.sectionHeader}>
-                        <Text type='subheading'
-                              style={styles.discountName}>{current?.paymentMethod?.memberCard?.cardName}</Text>
-                        <Text type='bodyheading'
-                              style={styles.discountAmount}>{`-￥${current?.paymentMethod?.memberCard?.giftCardAmt}`}</Text>
+                        <Text style={styles.discountName}>{current?.paymentMethod?.memberCard?.cardName}</Text>
+                        <Text style={styles.discountAmount}>{`-￥${current?.paymentMethod?.memberCard?.giftCardAmt}`}</Text>
                     </View>
                     : null}
             </>
         )
     }
-
-
     return (
         <View style={styles.payType}>
             <SectionHeader title="支付方式" isRenderRight={false}/>
@@ -47,9 +43,7 @@ const CGVPaymentMethodContainer = ({
     )
 }
 
-CGVPaymentMethodContainer.propTypes = {
-
-}
+CGVPaymentMethodContainer.propTypes = {}
 
 const styles = StyleSheet.create({
     container: {

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {Dimensions, StyleSheet, Text} from 'react-native';
 import Card from '../../../../common/Card/Card';
 
@@ -9,7 +9,7 @@ const TopMessageContainer = ({minutes, seconds }) => {
     <Text style={styles.messageText}>请您在 {minutes}分{seconds}秒 内完成支付，超时将取消订单。</Text>
   );
   return (
-    <Card type="clear" style={styles.container}>
+    <Card style={styles.container}>
       {renderMessage()}
     </Card>
   );

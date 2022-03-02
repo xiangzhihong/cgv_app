@@ -1,17 +1,6 @@
-import {
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  Animated,
-  Easing,
-  Text,
-  Dimensions,
-  Platform,
-} from 'react-native';
+import {TouchableOpacity, View, StyleSheet, Animated, Easing, Text} from 'react-native';
 import * as React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
-const {width} = Dimensions.get('window');
 
 export const ShareBody = ({data}) => {
   return (
@@ -61,8 +50,7 @@ export default ({title = '结算明细', subtitle, list = [], data, children}) =
       style={styles.container}>
       <Animated.View
         style={[
-          styles.content,
-          {
+          styles.content, {
             transform: [
               {
                 translateY: top.interpolate({

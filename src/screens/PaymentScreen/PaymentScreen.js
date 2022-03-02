@@ -1,12 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native'
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import Card from '../../common/Card/Card'
 import {aliPay, UPPay, Wxpay} from '../../nativeBridge/pay'
 import {
@@ -21,7 +14,6 @@ import {
     VoucherContainer,
     PayBottomContainer
 } from './containers'
-import {PaymentBottomBtn} from './components'
 import {tools} from '../../utils'
 import {goBack} from '../../utils/rootNavigation'
 import couponPoint from '../../mock/coupon.json'
@@ -177,7 +169,7 @@ const PaymentScreen = ({
                     seeMore={() => navigation.navigate('FriendCardListScreen')}/>
                 <ShopContainer items={featuredProducts}/>
                 <ShopCouponContainer/>
-                <CGVPaymentMethodContainer list={payStatusList}/>
+                <CGVPaymentMethodContainer current={payStatusList}/>
                 <ThirdPaymentContainer/>
                 <View style={{height: 60}}/>
             </ScrollView>

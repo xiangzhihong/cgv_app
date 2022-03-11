@@ -28,7 +28,7 @@ const FriendCardItem = ({item}) => (
 const styles = StyleSheet.create({
     topicItem: {
         width: 100,
-        height: 125,
+        height: 145,
         marginRight: 8,
         borderRadius: 3,
         borderColor: '#ddd',

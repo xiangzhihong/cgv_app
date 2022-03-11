@@ -3,7 +3,6 @@ import {StyleSheet, SectionList, FlatList, View} from 'react-native'
 import ShoppingCartBar from './components/ShoppingCartBar'
 import GoodItem from '../../common/GoodItem/GoodItem'
 import Menu from './components/Menu'
-import {AD_BANNER_TYPES} from '../../constants'
 import {AESUtils, tools} from '../../utils'
 import apiRequest from "../../api";
 

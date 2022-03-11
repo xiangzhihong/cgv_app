@@ -29,8 +29,7 @@ const Navigator = () => {
                     <RootStack.Screen
                         name="MyModal"
                         component={ModalScreen}
-                        options={{headerShown: false}}
-                    />
+                        options={{headerShown: false}}/>
                     <RootStack.Screen
                         name="Alert"
                         component={AlertScreen}
@@ -73,7 +72,6 @@ const Navigator = () => {
                 </RootStack.Navigator>
             </NavigationContainer>
         </>
-
     );
 };
 

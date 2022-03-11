@@ -9,38 +9,34 @@ import MyRightContainer from './containers/MyRightContainer'
 import AboutContainers from './containers/AboutContainers'
 import MovieSeenContainers from './containers/MovieSeenContainers'
 import {defaultAvatar} from '../../assets/images/mine'
-import JPush from 'jpush-react-native'
 import httpConfig from "../../api/httpConfig";
+import userInfo from "../../mock/userInfo.json";
 
-
-const MineScreen = ({ route, thatCd, navigation: { navigate }, isLoggedIn, userInfo, updateUserInfoInRedux: _updateUserInfoInRedux }) => {
+const MineScreen = ({ route, thatCd, navigation: { navigate }, updateUserInfoInRedux: _updateUserInfoInRedux }) => {
   const [show, setShow] = React.useState(false)
   const [mesageReadStatus, setMesageReadStatus] = React.useState(false)
 
   useEffect(() => {
-    const tagAliasListener = result => {
-      console.log("tagAliasListener:" + JSON.stringify(result))
-    };
-    JPush.addTagAliasListener(tagAliasListener);
-  }, [isLoggedIn])
+
+  }, [])
 
   const initData = async () => {
 
   }
 
-  const goto = (routeName) => {
-
+  function goto() {
+      navigate('LoginScreen')
   }
 
   return (
-    <ScrollView
-      footer={<QrCodeModal userInfo={userInfo} show={show} onHide={() => setShow(false)} />}>
-      <HeaderContainers isLogin={false} userInfo={userInfo} loadData={initData} goto={goto} onQrcodePress={() => setShow(true)} />
+    <ScrollView>
+      <QrCodeModal userInfo={userInfo} show={show} onHide={() => setShow(false)} />
+      <HeaderContainers userInfo={userInfo} loadData={initData} goto={goto} onQrcodePress={() => setShow(true)} loginPress={goto}/>
       <TopNavContainers navigate={navigate} goto={goto} />
       <MyRightContainer goto={goto} />
       <View style={{height: 10, width: '100%'}}/>
-      <MovieSeenContainers isLogin={isLoggedIn} userInfo={userInfo} goto={goto} />
-      <AboutContainers thatCd={thatCd} isLoggedIn={isLoggedIn} goto={goto} status={mesageReadStatus}/>
+      <MovieSeenContainers  userInfo={userInfo} goto={goto} />
+      <AboutContainers thatCd={thatCd}  goto={goto} status={mesageReadStatus}/>
     </ScrollView>
   )
 }
@@ -60,14 +56,14 @@ const QrCodeModal = (
       onRequestClose={onHide}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+          <View style={styles.nickName}>
             <Avatar source={pic ? { uri: httpConfig.mediaUrl + pic } : defaultAvatar} />
             <Text>{nickname}</Text>
           </View>
           <QRCode value={vip} size={175} />
           <Text type="subheading" style={{ marginTop: 5 }}>{vip}</Text>
           <Text type="label" style={{ marginTop: 6 }}>请向影院工作人员出示二维码</Text>
-          <TouchableOpacity onPress={() => onHide()} style={{ position: 'absolute', top: 15, right: 15, paddingLeft: 20, paddingBottom: 10 }}>
+          <TouchableOpacity onPress={() => onHide()} style={styles.hideStyle}>
             <AntDesign name="close" size={28} />
           </TouchableOpacity>
         </View>
@@ -103,6 +99,18 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  nickName: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  hideStyle: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    paddingLeft: 20,
+    paddingBottom: 10
   },
 })
 

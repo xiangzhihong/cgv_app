@@ -1,11 +1,4 @@
-import {
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  Text,
-  Animated,
-  ScrollView,
-} from 'react-native';
+import {TouchableOpacity, View, StyleSheet, Text, Animated, ScrollView,} from 'react-native';
 import * as React from 'react';
 import Container from './AlertContainer';
 import AlertInput from './AlertInput';
@@ -28,7 +21,6 @@ const Alert = ({
     headTextStyle,
     closeColor,
     contentStyle,
-    bottomTip,
   } = options;
 
   const close = () => {
@@ -66,7 +58,6 @@ const Alert = ({
         {renderContent()}
       </ScrollView>
       <Button close={close} buttons={buttons} submitText={submitText} />
-      {bottomTip ? <Text style={styles.bottomTip}>{bottomTip}</Text> : null}
     </Container>
   );
 };
@@ -144,9 +135,9 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     paddingHorizontal: 15,
     paddingVertical: 20,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     borderBottomColor: '#E5E5E5',
-    maxHeight: 500,
+    maxHeight: 420,
   },
   buttonContainer: {
     height: 44,

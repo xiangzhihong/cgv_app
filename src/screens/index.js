@@ -24,6 +24,8 @@ import GoodDetailScreen from "./GoodDetailScreen";
 import ShopingCartScreen from "./ShopingCartScreen";
 import SelectSeatScreen from "./SelectSeatScreen";
 import PaymentScreen from "./PaymentScreen/PaymentScreen";
+import ModalCGVPayScreen from "./ModalCGVPayScreen";
+import LoginScreen from "./LoginScreen/LoginScreen";
 
 export {
     ShopingCartScreen,
@@ -359,6 +361,22 @@ export const stacks = [
                 ),
             }
         },
+    },
+    {
+        name: 'ModalCGVPayScreen',
+        component: ModalCGVPayScreen,
+        options: ({route}) => {
+            const {params = {}} = route
+            const {title = '星意卡'} = params
+            return {
+                title,
+            }
+        },
+    },
+    {
+        name: 'LoginScreen',
+        component: LoginScreen,
+        options: {headerShown: false},
     },
 ];
 

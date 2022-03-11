@@ -6,19 +6,18 @@ import {
   Platform,
   StyleSheet,
   ViewPropTypes,
+  Text
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Text from '../Text/Text';
 import Spinner from '../Spinner/Spinner';
-import {ThemeContext} from '../../theme';
 import {DIMENS, SPACING, TYPOGRAPHY} from '../../constants';
 
 const SOLID = 'solid';
 const OUTLINE = 'outline';
 const CLEAR = 'clear';
 
-const defaultLoadingProps = (type, theme) => ({
-  color: type === 'solid' ? theme.white : theme.primaryColor,
+const defaultLoadingProps = (type) => ({
+  color: type === 'solid' ? '#fff' : '#FC5869',
   size: 'small',
 });
 
@@ -26,7 +25,7 @@ const TouchReceptor =
   Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity;
 
 const propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   type: PropTypes.oneOf([SOLID, OUTLINE, CLEAR]),
   onPress: PropTypes.func,
   disabled: PropTypes.bool,
@@ -52,18 +51,16 @@ const Button = ({
   hasNotch = false,
   textStyle,
 }) => {
-  const {theme} = useContext(ThemeContext);
-
   const containerStyle = StyleSheet.flatten([
-    styles.button(type, theme),
+    styles.button(type),
     style,
-    disabled && styles.disabled(type, theme),
+    disabled && styles.disabled(type),
   ]);
 
   const titleStyle = StyleSheet.flatten([
-    styles.title(type, theme),
+    styles.title(type),
     textStyle,
-    disabled && styles.disabledTitle(theme),
+    disabled && styles.disabledTitle,
   ]);
 
   return (
@@ -75,7 +72,7 @@ const Button = ({
         {loading && !disabled ? (
           <Spinner
             style={styles.loading}
-            {...defaultLoadingProps(type, theme)}
+            {...defaultLoadingProps(type)}
           />
         ) : (
           <Text style={titleStyle}>{title}</Text>
@@ -86,27 +83,27 @@ const Button = ({
 };
 
 const styles = StyleSheet.create({
-  button: (type, theme) => ({
+  button: (type) =>({
     flexDirection: 'row',
     padding: SPACING.small,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: type === SOLID ? theme.primaryColor : theme.transparent,
-    borderWidth: type === OUTLINE ? StyleSheet.hairlineWidth : 0,
-    borderColor: theme.primaryColor,
+    backgroundColor: type === SOLID ? '#FC5869' : 'transparent',
+    borderWidth: type === OUTLINE ? 1 : 0,
+    borderColor: '#FC5869',
     borderRadius: DIMENS.borderRadius,
   }),
-  disabled: (type, theme) => ({
-    backgroundColor: type === SOLID ? theme.disabledColor : theme.transparent,
-    borderColor: theme.disabledDarkColor,
+  disabled:(type) =>({
+    backgroundColor: type === SOLID ? '#E3E6E8' : 'transparent',
+    borderColor: '#99A1A8',
   }),
-  title: (type, theme) => ({
+  title: (type) =>({
     ...TYPOGRAPHY.buttonText,
-    color: type === SOLID ? theme.white : theme.primaryColor,
+    color: type === SOLID ? '#fff' : '#FC5869',
   }),
-  disabledTitle: theme => ({
-    color: theme.disabledDarkColor,
-  }),
+  disabledTitle: {
+    color: '#99A1A8',
+  },
   loading: {
     marginVertical: 2,
   },

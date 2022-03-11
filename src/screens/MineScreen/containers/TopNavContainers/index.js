@@ -28,7 +28,7 @@ export default ({ goto }) => {
         Navs.map((item, index) => (
           <TouchableOpacity key={index} style={styles.item} activeOpacity={0.7} onPress={() => goto(item.route)}>
             <Image source={item.icon} style={{ width: 40, height: 40 }} />
-            <Text type="label" style={{ color: '#222', marginTop: 6 }}>{item.title}</Text>
+            <Text  style={{ color: '#222', marginTop: 6 }}>{item.title}</Text>
           </TouchableOpacity>
         ))
       }

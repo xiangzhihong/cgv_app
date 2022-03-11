@@ -6,7 +6,7 @@ const components = {
   alert: Alert,
 };
 
-const AlertScreen = ({navigation, route}) => {
+const AlertScreen = ({route}) => {
   const {component = 'alert', ...rest} = route.params;
   const Comp = components[component];
   return (

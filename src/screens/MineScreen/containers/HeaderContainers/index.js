@@ -10,7 +10,7 @@ import {
 } from '../../../../assets/images/mine'
 import Header from '../../components/Header'
 
-export default () => {
+export default ({loginPress,onQrcodePress}) => {
     return (
         <ImageBackground source={headerBgImage}>
             <Header/>
@@ -35,14 +35,14 @@ export default () => {
                     )
                 }
                 renderRight={() => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={onQrcodePress}>
                         <Image source={qrcode} style={{ width: 28, height: 28 }} />
                     </TouchableOpacity>
                 )}
             />
-            <View style={{marginBottom: 44, marginLeft: 15,marginTop:15, width: 75}}>
+            <TouchableOpacity style={styles.register} onPress={loginPress}>
                 <Text style={{color: '#fff', textAlign: 'center'}}>注册/登录</Text>
-            </View>
+            </TouchableOpacity>
         </ImageBackground>
     )
 }
@@ -91,5 +91,11 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: '#fff',
         marginRight: 2,
+    },
+    register: {
+        marginBottom: 35,
+        marginLeft: 15,
+        marginTop:15,
+        width: 75
     },
 })

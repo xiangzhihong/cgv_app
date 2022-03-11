@@ -21,26 +21,7 @@ import apiRequest from "../../api";
 
 const endTime = new Date().getTime() + (14 * 60 + 59) * 1000  //倒计时截止时间
 
-const PaymentScreen = ({
-                           route,
-                           current,
-                           selectedCinema,
-                           currentRouteName,
-                           navigation,
-                           getBestDisc: _getBestDisc,
-                           createPayment: _createPayment,
-                           resetPaymentState: _resetPaymentState,
-                           getUsableCouponsAndCardsForSchedule: _getUsableCouponsAndCardsForSchedule,
-                           getFeaturedProducts: _getFeaturedProducts,
-                           getAvailablePromotions: _getAvailablePromotions,
-                           setTicketVoucher: _setTicketVoucher,
-                           getGiftCards: _getGiftCards,
-                           getCustomerPoint: _getCustomerPoint,
-                           getDscResult: _getDscResult,
-                           editMobileNumber: _editMobileNumber,
-                           resetCheckoutProductState: _resetCheckoutProductState,
-                           updateUserInfoInRedux: _updateUserInfoInRedux
-                       }) => {
+const PaymentScreen = ({route, navigation}) => {
     const {
         cinema, lang, movCd, movFmt, movId, movName, movUrl, screenName, seats, srmCd,
         thatAddr, thatCd, thatId, thatName, thatParty, type

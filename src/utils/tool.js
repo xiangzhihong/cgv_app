@@ -125,12 +125,6 @@ const startAnimation = (duration = 200, callback) => {
 
 const getVersion = () => {};
 
-/**
- *   @param title
- *   @param content
- *   @param buttons
- *   @param options
- */
 
 const alert = (
   content = '',
@@ -152,8 +146,6 @@ const alert = (
     closeBtnStatus,
     closeBtn,
   });
-  // global.siblingAlert = new RootSiblings(<Alert title={title} content={content} buttons={buttons} options={options}
-  //   closeBtn={closeBtn} closeBtnStatus={closeBtnStatus}/>)
 };
 
 const confirm = (
@@ -231,12 +223,6 @@ const prompt = (
     options: opt,
     component: 'alert',
   });
-  // if (global.siblingAlert) {
-  //   global.siblingAlert.destroy();
-  // }
-  // global.siblingAlert = new RootSiblings(
-  //   <Alert title={title} content={content} buttons={btns} options={opt} />,
-  // );
 };
 
 const alertShare = (

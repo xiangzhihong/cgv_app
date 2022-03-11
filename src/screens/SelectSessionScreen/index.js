@@ -15,7 +15,6 @@ import schedule from '../../mock/movePrday.json'
 
 
 let carousel = null
-
 const SelectSessionScreen = (
     {
         navigation,

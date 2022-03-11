@@ -7,8 +7,19 @@ import {
   Dimensions,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
+import {navigate} from "../../../utils";
 
 const {width} = Dimensions.get('window');
+
+const TARGET_SCREEN_TYPE = {
+  IntegralMall: 'IntegralMall',
+  MovieDetail: 'DetailsMainPage',
+  Topic: 'TopicPage',
+  PromotionDetail: 'ActiveDetails',
+  Game: 'YS',
+  AboutCGV: 'AboutCGV',
+  GoodsDetail: 'GoodsDetail',
+}
 
 const HomeBanner = ({list}) => {
   const Banner = ({item, height, style, onPress}) => {
@@ -24,11 +35,18 @@ const HomeBanner = ({list}) => {
     );
   };
 
-  const onPressBanner = (linkObjectInfo = '') => {
-    // const info = linkObjectInfo.split('||');
-    // console.log(info, 'onPressBanner111');
-    // const first = info[0];
-    // const second = info[1] || '';
+  const onPressBanner = (linkObject = '') => {
+    const info = linkObject.split('||');
+    console.log(info, "√√√")
+    const first = info[0]
+    const second = info[1] || ''
+    console.log('onPressBanner: '+first+','+second)
+    const { IntegralMall, MovieDetail, Topic, PromotionDetail, Game, AboutCGV, GoodsDetail } = TARGET_SCREEN_TYPE
+    if (first === MovieDetail) {
+      navigate('MovieDetailScreen', { movieId: second })
+    }else if (first === PromotionDetail) {
+      navigate('PromotionDetailScreen', { activeId: second })
+    }
   };
 
   return (

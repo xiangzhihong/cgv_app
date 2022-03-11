@@ -16,9 +16,10 @@ const ThirdPaymentContainer = () => {
 
 
     const payAttrFun = async () => {
-        // let baseUrl = '/facility/attr/188'
-        // const res = await apiRequest.get(baseUrl)
-        setPayList(thirdPay)
+        let baseUrl = '/facility/attr/188'
+        const res = await apiRequest.get(baseUrl)
+        console.log(res)
+        setPayList(res)
     }
 
     const PayByAlipay = () => {
@@ -31,8 +32,7 @@ const ThirdPaymentContainer = () => {
                 <View style={styles.cardContain}>
                     <Image
                         style={styles.cardImg}
-                        source={require('../../../../assets/images/pay/alipay.png')}
-                    />
+                        source={require('../../../../assets/images/pay/alipay.png')}/>
                     <View>
                         <Text style={styles.cardNam}>支付宝支付</Text>
                         <Text style={styles.cardDes}>推荐支付宝用户使用</Text>
@@ -42,7 +42,7 @@ const ThirdPaymentContainer = () => {
                     <AntDesign
                         name={isSelected === 2 ? 'checkcircle' : 'checkcircleo'}
                         size={18}
-                        color={isSelected === 2 ? '#F1A23D' : '#DDDDDD'}
+                        color={isSelected === 2 ? '#F1A23D' : '#dddddd'}
                     />
                 </View>
             </TouchableOpacity>
@@ -70,7 +70,7 @@ const ThirdPaymentContainer = () => {
                     <AntDesign
                         name={isSelected === 1 ? 'checkcircle' : 'checkcircleo'}
                         size={18}
-                        color={isSelected === 1 ? '#F1A23D' : '#DDDDDD'}
+                        color={isSelected === 1 ? '#F1A23D' : '#dddddd'}
                     />
                 </View>
             </TouchableOpacity>
@@ -99,7 +99,7 @@ const ThirdPaymentContainer = () => {
                     <AntDesign
                         name={isSelected === 3 ? 'checkcircle' : 'checkcircleo'}
                         size={18}
-                        color={isSelected === 3 ? '#F1A23D' : '#DDDDDD'}
+                        color={isSelected === 3 ? '#F1A23D' : '#dddddd'}
                     />
                 </View>
             </TouchableOpacity>

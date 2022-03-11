@@ -1,0 +1,25 @@
+{
+  "data": {
+    "level": "01",
+    "xsDays": 412,
+    "birth": true,
+    "mobileNo": "137****9765",
+    "pic": "",
+    "userName": "13764659765",
+    "birthDate": "1994-05-08",
+    "point": 0.0,
+    "sytpcs": "0",
+    "jnr": true,
+    "joinDy": "2021-01-21T16:00:00.000+0000",
+    "level_name": "初心朋友",
+    "nickname": "CGV影迷",
+    "jmDays": 0,
+    "scalper_yn": "0",
+    "xcQmz": "1",
+    "vip": "1107201811322918",
+    "qmz": 0
+  },
+  "code": 200,
+  "message": "OK",
+  "page": null
+}

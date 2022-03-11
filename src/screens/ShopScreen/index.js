@@ -8,7 +8,7 @@ import {
     Text,
     Image,
     Dimensions,
-    Modal,
+    ScrollView,
 } from 'react-native'
 import MenuItem from './components/MenuItem'
 import FriendCards from './components/FriendCards'
@@ -24,23 +24,11 @@ import Holder from "../../common/Holder";
 
 const {width, height} = Dimensions.get('window')
 
-const ShopScreen = ({
-                        route,
-                        position: _position,
-                        selectedCinema = '',
-                        navigation: {navigate},
-                        addToCart: _addToCart,
-                        isLoggedIn,
-                        cartTotalQuantity,
-                        thatCd,
-                        facilityId
-                    }) => {
+const ShopScreen = ({navigation: {navigate}}) => {
     const [friendCards, setFriendCards] = useState([])
     const [goodList, setGoodList] = useState([])
-    const [total, setTotal] = useState([])
     const [list, setList] = useState([])
     const [showAlert, setShowAlert] = useState(false)
-    global.type = null
 
     useEffect(() => {
         getBannerList()
@@ -67,7 +55,6 @@ const ShopScreen = ({
 
     const getGoodList = async () => {
         let url = '/product/good/list-all'
-        //facilityId: facilityId
         let param = {
             facilityCd: 188,
             showInSelect: '1',
@@ -78,9 +65,7 @@ const ShopScreen = ({
         if (res != null) {
             const list = res.content.length > 0 ? res.content[0].goodList : []
             setGoodList(list)
-            setTotal(res.totalPages)
         }
-        console.log('getGoodList: ' + goodList)
     }
 
     const LeftView = ({cinmaName = '上海大宁电影城', onHeaderLeftPress}) => {
@@ -98,21 +83,21 @@ const ShopScreen = ({
 
     const gotoGoodList = () => navigate('GoodListScreen')
 
+    const goCardListScreen = () => {
+        navigate("FriendCardListScreen")
+    }
+
     function renderMenuView() {
         return (
             <View style={styles.menuViewStyle}>
                 <MenuItem title="我的订单" imgSource={require('../../assets/images/shop/menuMyOrder.png')}
                           onPress={() => goPressTo()}/>
-                <MenuItem title="购物车" num={cartTotalQuantity}
+                <MenuItem title="购物车" num={10}
                           imgSource={require('../../assets/images/shop/menuShoppingCart.png')}
                           onPress={() => navigate('MyModal', {screen: 'ShopingCartScreen'})}/>
                 <MenuItem title="积分商城" imgSource={require('../../assets/images/shop/menuPointsMall.png')}
                           onPress={() => {
-                              if (!isLoggedIn) {
-                                  navigate('MyModal', {screen: 'LoginScreen'})
-                              } else {
-                                  navigate('IntegralMallScreen')
-                              }
+                              navigate('MyModal', {screen: 'LoginScreen'})
                           }}/>
             </View>
         );
@@ -141,57 +126,56 @@ const ShopScreen = ({
         )
     }
 
-    function renderModel() {
-        return (<Modal
-            animationType="fade"
-            transparent
-            visible={showAlert}
-        >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Image
-                        style={{marginTop: -(width - 100) * 0.57, width: width - 100, height: (width - 100) * 0.57}}
-                        source={require('../../assets/images/common/piao.png')}/>
-                    <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
-                    </View>
-                    <Text type="subheading"
-                          style={{marginTop: 20, marginBottom: 15, fontSize: 20, fontWeight: 'bold'}}>温馨提示</Text>
-                    <Text type="label" style={{
-                        fontSize: 16,
-                        color: '#5e5e5e',
-                        width: '60%',
-                        textAlign: 'center',
-                        lineHeight: 20,
-                    }}>您有尚未使用的优惠券记得用哦～</Text>
-                    <View
-                        style={{flexDirection: 'row', borderTopColor: '#e5e5e5', borderTopWidth: 1, marginTop: 25}}>
-                        <TouchableOpacity onPress={() => setShowAlert(false)} style={{
-                            width: '50%',
-                            alignItems: 'center',
-                            borderRightColor: '#e5e5e5',
-                            borderRightWidth: 1,
-                            justifyContent: 'center',
-                            height: 45,
-                        }}>
-                            <Text style={{fontSize: 15}}>先不用了</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => {
-                                setShowAlert(false)
-                                if (!isLoggedIn) {
-                                    navigate('MyModal', {screen: 'LoginScreen'})
-                                } else {
-                                    navigate('MyTicketsScreen')
-                                }
-                            }}
-                            style={{width: '50%', alignItems: 'center', justifyContent: 'center', height: 50}}>
-                            <Text style={{fontSize: 15, color: '#FC5869'}}>去看看</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        </Modal>);
-    }
+    // function renderModel() {
+    //     return (<Modal
+    //         animationType="fade"
+    //         transparent
+    //         visible={showAlert}>
+    //         <View style={styles.centeredView}>
+    //             <View style={styles.modalView}>
+    //                 <Image
+    //                     style={{marginTop: -(width - 100) * 0.57, width: width - 100, height: (width - 100) * 0.57}}
+    //                     source={require('../../assets/images/common/piao.png')}/>
+    //                 <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
+    //                 </View>
+    //                 <Text type="subheading"
+    //                       style={{marginTop: 20, marginBottom: 15, fontSize: 20, fontWeight: 'bold'}}>温馨提示</Text>
+    //                 <Text type="label" style={{
+    //                     fontSize: 16,
+    //                     color: '#5e5e5e',
+    //                     width: '60%',
+    //                     textAlign: 'center',
+    //                     lineHeight: 20,
+    //                 }}>您有尚未使用的优惠券记得用哦～</Text>
+    //                 <View
+    //                     style={{flexDirection: 'row', borderTopColor: '#e5e5e5', borderTopWidth: 1, marginTop: 25}}>
+    //                     <TouchableOpacity onPress={() => setShowAlert(false)} style={{
+    //                         width: '50%',
+    //                         alignItems: 'center',
+    //                         borderRightColor: '#e5e5e5',
+    //                         borderRightWidth: 1,
+    //                         justifyContent: 'center',
+    //                         height: 45,
+    //                     }}>
+    //                         <Text style={{fontSize: 15}}>先不用了</Text>
+    //                     </TouchableOpacity>
+    //                     <TouchableOpacity
+    //                         onPress={() => {
+    //                             setShowAlert(false)
+    //                             if (!isLoggedIn) {
+    //                                 navigate('MyModal', {screen: 'LoginScreen'})
+    //                             } else {
+    //                                 navigate('MyTicketsScreen')
+    //                             }
+    //                         }}
+    //                         style={{width: '50%', alignItems: 'center', justifyContent: 'center', height: 50}}>
+    //                         <Text style={{fontSize: 15, color: '#FC5869'}}>去看看</Text>
+    //                     </TouchableOpacity>
+    //                 </View>
+    //             </View>
+    //         </View>
+    //     </Modal>);
+    // }
 
     return (
         <View>
@@ -201,7 +185,7 @@ const ShopScreen = ({
                     <View>
                         {renderBanner()}
                         {renderMenuView()}
-                        <FriendCards list={friendCards} seeMore={() => navigate('FriendCardListScreen')}/>
+                        <FriendCards list={friendCards} seeMore={goCardListScreen}/>
                         <View style={styles.holder}/>
                         <SectionTitle title="人气商品" morePress={gotoGoodList}/>
                         <SpliteLine/>
@@ -217,19 +201,17 @@ const ShopScreen = ({
                     />
                 }
                 ItemSeparatorComponent={() => <SpliteLine/>}
-                ListFooterComponent={goodList.length > total * 10 ?
+                ListFooterComponent={goodList.length > 10 ?
                     <ButtonListFooter content="查看更多商品" onPress={() => getGoodList()} style={styles.footer}/> :
                     <View style={{height: 60}}/>}
                 data={goodList}
-                renderItem={({item}) => <GoodItem addOrder={_addToCart} goBackRefresh={() => getGoodList()} type='goods'
-                                                  isLoggedIn={isLoggedIn} item={item} showPromotionText showTag/>}
+                renderItem={({item}) => <GoodItem goBackRefresh={() => getGoodList()} item={item}/>}
                 keyExtractor={item => item.id}
             />
-            <ShoppingCartBtn count={cartTotalQuantity} onPress={() => {
+            <ShoppingCartBtn count={10} onPress={() => {
                 global.type = null
                 navigate('MyModal', {screen: 'ShopingCartScreen'})
             }}/>
-            {renderModel()}
         </View>
     )
 }
@@ -312,6 +294,5 @@ const styles = StyleSheet.create({
         bottom: 5,
     }
 })
-
 
 export default ShopScreen;

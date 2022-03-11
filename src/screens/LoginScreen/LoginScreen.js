@@ -1,17 +1,16 @@
 import React, {useState, useEffect} from 'react'
-import {Text, View, StyleSheet, Dimensions, Image} from 'react-native'
+import {Text, View, StyleSheet, Dimensions, Image,TouchableOpacity} from 'react-native'
 import Button from '../../common/Button/Button'
-import {TouchableOpacity} from 'react-native-gesture-handler'
 import PhoneNumberInput from '../../common/PhoneNumberInput'
-import {tools} from '../../utils'
+import {navigate, tools} from '../../utils'
 import LoginLogo from '../../common/LoginLogo'
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 const {width: deviceWidth, height: deviceHeight} = Dimensions.get('window')
 
 const TAG_QQ = 0
+const TAG_SINA = 1
 const TAG_WECHAT = 2
-
 
 const IconBtn = ({source, onPress}) => (
     <TouchableOpacity onPress={onPress}>
@@ -22,11 +21,9 @@ const IconBtn = ({source, onPress}) => (
     </TouchableOpacity>
 )
 
-const LoginScreen = ({navigation, thatCd, signInSuccess: _signInSuccess}) => {
+const LoginScreen = ({navigation, signInSuccess: _signInSuccess}) => {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [check, setCheck] = useState(false)
-    const [isShowQQ, setIsShowQQ] = useState(false)
-    const [isShowWechat, setIsShowWechat] = useState(false)
 
     useEffect(() => {
 
@@ -35,14 +32,10 @@ const LoginScreen = ({navigation, thatCd, signInSuccess: _signInSuccess}) => {
     const submitPhoneNumber = () => {
         const reg = new RegExp('^[1][3,4,5,6,7,8,9][0-9]{9}$')
         if (reg.test(phoneNumber)) {
-            // getVerificationCode()
+            navigation.replace('LoginVerificationCodeScreen')
         } else {
             tools.Toast.toast('手机号格式不正确', 1)
         }
-    }
-
-    const getVerificationCode = async (ticket, randstr) => {
-
     }
 
     const onCheckBoxTap = () => {
@@ -79,6 +72,7 @@ const LoginScreen = ({navigation, thatCd, signInSuccess: _signInSuccess}) => {
                 <View style={styles.bottom}>
                     <IconBtn source={require('../../assets/images/login/wechat.png')}
                              onPress={() => loginByThird(TAG_WECHAT)}/>
+                    <IconBtn source={require('../../assets/images/login/blog.png')} onPress={() => loginByThird(TAG_SINA)} />
                     <IconBtn source={require('../../assets/images/login/qq.png')}
                              onPress={() => loginByThird(TAG_QQ)}/>
                 </View>
@@ -91,10 +85,10 @@ const LoginScreen = ({navigation, thatCd, signInSuccess: _signInSuccess}) => {
                     </TouchableOpacity>
 
                     <Text style={styles.agreeText}>登录即代表同意</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('UserAgreementScreen')}>
+                    <TouchableOpacity onPress={() => navigate('UserAgreementScreen')}>
                         <Text style={[styles.agreeText, styles.link]}>《CGV用户协议》</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('UserPrivacyScreen')}>
+                    <TouchableOpacity onPress={() => navigate('UserPrivacyScreen')}>
                         <Text style={[styles.agreeText, styles.link]}>《用户隐私制度》</Text>
                     </TouchableOpacity>
                 </View>

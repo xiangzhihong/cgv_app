@@ -26,6 +26,9 @@ import SelectSeatScreen from "./SelectSeatScreen";
 import PaymentScreen from "./PaymentScreen/PaymentScreen";
 import ModalCGVPayScreen from "./ModalCGVPayScreen";
 import LoginScreen from "./LoginScreen/LoginScreen";
+import LoginVerificationCodeScreen from "./LoginVerificationCodeScreen/LoginVerificationCodeScreen";
+import UserAgreementScreen from "./UserAgreementScreen"
+import UserPrivacyScreen from "./UserPrivacyScreen"
 
 export {
     ShopingCartScreen,
@@ -377,6 +380,21 @@ export const stacks = [
         name: 'LoginScreen',
         component: LoginScreen,
         options: {headerShown: false},
+    },
+    {
+        name: 'LoginVerificationCodeScreen',
+        component: LoginVerificationCodeScreen,
+        options: {headerShown: false},
+    },
+    {
+        name: 'UserAgreementScreen',
+        component: UserAgreementScreen,
+        options: {title: '用户协议'},
+    },
+    {
+        name: 'UserPrivacyScreen',
+        component: UserPrivacyScreen,
+        options: {title: '用户隐私制度'},
     },
 ];
 

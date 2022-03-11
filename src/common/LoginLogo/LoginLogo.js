@@ -6,7 +6,7 @@ const LoginLogo = ({title = '欢迎登录', style}) => {
         <View style={[styles.logoLayer, style]}>
             <Image
                 style={styles.logo}
-                source={require('../../../assets/images/login/loginLogo.png')}
+                source={require('../../assets/images/login/loginLogo.png')}
             />
             <Text style={styles.welcome}>{title}</Text>
         </View>

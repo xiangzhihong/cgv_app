@@ -29,6 +29,7 @@ import LoginScreen from "./LoginScreen/LoginScreen";
 import LoginVerificationCodeScreen from "./LoginVerificationCodeScreen/LoginVerificationCodeScreen";
 import UserAgreementScreen from "./UserAgreementScreen"
 import UserPrivacyScreen from "./UserPrivacyScreen"
+import FriendCardDetailScreen from "./FriendCardDetailScreen/FriendCardDetailScreen";
 
 export {
     ShopingCartScreen,
@@ -371,6 +372,17 @@ export const stacks = [
         options: ({route}) => {
             const {params = {}} = route
             const {title = '星意卡'} = params
+            return {
+                title,
+            }
+        },
+    },
+    {
+        name: 'FriendCardDetailScreen',
+        component: FriendCardDetailScreen,
+        options: ({route}) => {
+            const {params = {}} = route
+            const {title = '朋友卡详情'} = params
             return {
                 title,
             }

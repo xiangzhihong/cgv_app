@@ -1,34 +1,17 @@
-import React, {useState, useEffect, useRef} from 'react'
-import {StyleSheet, SectionList, FlatList, View} from 'react-native'
+import React, {useEffect, useRef, useState} from 'react'
+import {FlatList, SectionList, StyleSheet, View} from 'react-native'
 import ShoppingCartBar from './components/ShoppingCartBar'
 import GoodItem from '../../common/GoodItem/GoodItem'
 import Menu from './components/Menu'
-import {AESUtils, tools} from '../../utils'
+import {tools} from '../../utils'
 import apiRequest from "../../api";
+import {goBack} from "../../utils/rootNavigation";
 
-const GoodListScreen = ({
-                            current,
-                            route,
-                            navigation: {navigate, goBack},
-                            createTicketOrder: _createTicketOrder,
-                            getDscResult: _getDscResult,
-                            items,
-                            addToCart: _addToCart,
-                            cartTotalQuantity,
-                            cartTotalAmount,
-                        }) => {
+const GoodListScreen = ({navigation: {navigate}}) => {
     let currentCategoryName
     const sectionListEle = useRef(null)
-    const {params} = route
     const [goods, setGoods] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(0)
-
-    const select = (index) => {
-        if (selectedIndex !== index) {
-            setSelectedIndex(index)
-            scrollTo(index)
-        }
-    }
 
     useEffect(() => {
         getGoodCategory()
@@ -49,16 +32,18 @@ const GoodListScreen = ({
                 data: goodList,
             })),
         )
-        // setGoods(data.content)
     }
 
-    const scrollTo = (index) => {
-        sectionListEle.current.scrollToLocation({
-            animated: false,
-            itemIndex: 0,
-            sectionIndex: index,
-            viewPosition: 0,
-        })
+    const select = (index) => {
+        if (selectedIndex !== index) {
+            setSelectedIndex(index)
+            sectionListEle.current.scrollToLocation({
+                animated: false,
+                itemIndex: 0,
+                sectionIndex: index,
+                viewPosition: 0,
+            })
+        }
     }
 
     const onViewableItemsChanged = (info) => {
@@ -74,115 +59,25 @@ const GoodListScreen = ({
     }
 
     const createGoodOrder = async () => {
-        let prodcutList = []
-        items.map((data) => {
-            let o = {}
-            if (data.subProduct && data.subProduct.length > 0) {
-                o = {
-                    id: data.productCd,
-                    prodCd: data.productId,
-                    qty: data.quantity,
-                    subprods: data.subProduct.map((ite) => {
-                        const oo = {
-                            id: ite.productCd,
-                            prodCd: ite.productId,
-                            productAssocCd: ite.productAssocCd,
-                            qty: ite.quantity,
-                        }
-                        return oo
-                    }),
-                }
-            } else {
-                o = {
-                    id: data.productCd,
-                    prodCd: data.productId,
-                    qty: data.quantity,
-                }
-            }
-            for (let i = data.quantity; i > 0; i--) {
-                prodcutList.push(o)
-            }
-        })
-
-        if (items.length < 1) {
-            tools.alert('购物车不能为空！', '', [
-                {
-                    text: '确定',
-                    onPress: () => {
-                        goBack()
-                    },
+        tools.alert('购物车不能为空！', '', [
+            {
+                text: '确定',
+                onPress: () => {
+                    goBack()
                 },
-            ])
-        } else {
-            tools.loading()
-            // _createTicketOrder(obj)
-        }
+            },
+        ])
     }
 
-    function getResult(){
-        let prodcutList = []
-        items.map((data) => {
-            let o = {}
-            if (data.subProduct && data.subProduct.length > 0) {
-                o = {
-                    id: data.productCd,
-                    prodCd: data.productId,
-                    qty: data.quantity,
-                    subprods: data.subProduct.map((ite) => {
-                        const oo = {
-                            id: ite.productCd,
-                            prodCd: ite.productId,
-                            qty: ite.quantity,
-                            productAssocCd: ite.productAssocCd,
-                        }
-                        return oo
-                    }),
-                }
-            } else {
-                o = {
-                    id: data.productCd,
-                    prodCd: data.productId,
-                    qty: data.quantity,
-                }
-            }
-            for (let i = data.quantity; i > 0; i--) {
-                prodcutList.push(o)
-            }
-        })
-        _getDscResult({
-            orderChnl: '07',
-            pointUseYn: current.paymentMethod.point.useYn,
-            orderId: current.onlineOrderNo,
-            coupons: [...current.ticketOrder.ticketCoupons],
-            prods: prodcutList,
-            mbrNm: current.ticketOrder.memberCard.memberCardName,
-            mbrCardNo: current.ticketOrder.memberCard.memberCardNo,
-            mbrCardPrice: current.ticketOrder.memberCard.memberCardAmount,
-            mbrCardType: current.ticketOrder.memberCard.memberCardType,
-            mbrCardPwd: current.ticketOrder.memberCard.memberCardPassword,
-            gftCardNm: current.paymentMethod.memberCard.cardName,
-            gftCertNo: current.paymentMethod.memberCard.cardNo,
-            gftAuthNo: current.paymentMethod.memberCard.cardType,
-            gftCertPrice: current.paymentMethod.memberCard.paymentAmount,
-            vouchers: current.ticketOrder.vouchers,
-            eventNo: current?.ticketOrder?.specialPromo?.promoId,
-            eventType: current?.ticketOrder?.specialPromo?.promoUseSeatNo,
-        })
-    }
 
     function renderShopCart() {
         return (<ShoppingCartBar
             style={{height:60}}
-            amount={cartTotalAmount}
-            num={cartTotalQuantity}
+            amount={0}
+            num={0}
             onPressLeft={() => navigate('MyModal', {screen: 'ShopingCartScreen'})}
             onPressRight={() => {
-                if (type === 'movie') {
-                    getResult()
-                    goBack()
-                } else {
-                    createGoodOrder()
-                }
+                createGoodOrder()
             }}
         />);
     }
@@ -210,8 +105,6 @@ const GoodListScreen = ({
             ref={sectionListEle}
             onScrollToIndexFailed={() => ({
                 index: selectedIndex,
-                highestMeasuredFrameIndex: 0,
-                averageItemLength: 100,
             })}
             sections={goods}
             renderItem={({item}) => (
@@ -223,7 +116,7 @@ const GoodListScreen = ({
     }
 
     return goods.length>0 && (
-        <View style={{flexDirection:'column', flex:1}}>
+        <View style={styles.contain}>
             <View style={styles.body}>
                 {renderLeftList()}
                 {renderRightList()}
@@ -234,6 +127,10 @@ const GoodListScreen = ({
 }
 
 const styles = StyleSheet.create({
+    contain: {
+        flexDirection:'column',
+        flex:1
+    },
     body: {
         flex: 1,
         flexDirection: 'row',

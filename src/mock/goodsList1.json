@@ -1,0 +1,34 @@
+{
+  "data": {
+    "content": [
+      {
+        "id": "SC_188_5",
+        "productCategoryCd": 5,
+        "productCategoryId": "GOOD_0",
+        "categoryName": "人气热销",
+        "categoryImageUrl": "/img/CGV_CMS_1609772871639.png",
+        "goodList": [
+          {
+            "id": "G_188_935",
+            "productCd": 22318,
+            "productId": "22010322",
+            "brandName": "02",
+            "productName": "PAC虎年拜年礼包5",
+            "smallImageUrl": "/img/CGV_CMS_1643181892747.jpg",
+            "detailScreen": "PACONNIE虎年拜年礼包",
+            "productCategoryId": "GOOD_0",
+            "categoryName": "人气热销",
+            "showInSelect": "1",
+            "price": 88.80,
+            "priceWithTax": 106.00,
+            "guidePrice": 88.80,
+            "likeCnt": 1
+          }
+        ]
+      }
+    ],
+    "totalElements": 6
+  },
+  "code": 200,
+  "message": "OK"
+}

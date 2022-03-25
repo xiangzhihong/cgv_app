@@ -30,6 +30,7 @@ import LoginVerificationCodeScreen from "./LoginVerificationCodeScreen/LoginVeri
 import UserAgreementScreen from "./UserAgreementScreen"
 import UserPrivacyScreen from "./UserPrivacyScreen"
 import FriendCardDetailScreen from "./FriendCardDetailScreen/FriendCardDetailScreen";
+import AboutScreen from "./AboutScreen";
 
 export {
     ShopingCartScreen,
@@ -407,6 +408,11 @@ export const stacks = [
         name: 'UserPrivacyScreen',
         component: UserPrivacyScreen,
         options: {title: '用户隐私制度'},
+    },
+    {
+        name: 'AboutScreen',
+        component: AboutScreen,
+        options: {title: '关于CGV'},
     },
 ];
 

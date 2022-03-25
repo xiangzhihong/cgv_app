@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import {ScrollView, TouchableOpacity, View} from 'react-native'
+import {ScrollView, View} from 'react-native'
 import CartBar from './components/CartBar'
-import {bizstream} from '../../bizstream'
 import Main from './components/Main'
 import Switcher from './components/Switcher'
 import Pictures from './components/Pictures'
@@ -15,75 +14,7 @@ const POP_TYPES = {
     MORES: 'mores',
 }
 
-const flattenProduction = (list = []) => {
-    const result = []
-    list.forEach(production => {
-        const target = production.defaultSub || production
-        for (let index = 0; index < production.quantity; index++) {
-            result.push(target)
-        }
-    })
-    return result
-}
 
-const concatSubProduct = item => {
-    const {subProductMap: {changes = [], mores = [], singles = []}} = item
-    const result = []
-    if (singles.length) singles.forEach(p => result.push(p))
-    if (changes.length) changes.forEach(p => result.push(p))
-    if (mores.length) mores.forEach(p => p.price && result.push(p))
-    return result
-}
-
-const extractKeyValue = (list, targetKey) => {
-    const arr = []
-    const obj = list.reduce((prev, next) => {
-        prev[next[targetKey]] = (prev[next[targetKey]] + 1) || 1
-        return prev
-    }, {})
-    const entries = Object.entries(obj)
-    entries.sort((firstEl, secondEl) => {
-        const A = firstEl[0]
-        const B = secondEl[0]
-        if (A < B) {
-            return -1
-        }
-        if (A > B) {
-            return 1
-        }
-        return 0
-    })
-    entries.forEach(([key, value]) => arr.push(`${key}*${value}`))
-    return arr
-}
-
-const concatDetailDescrition = (item = {}) => {
-    const {detailScreen, subProduct} = item
-    let str = detailScreen
-    if (subProduct?.length) {
-        const arr = extractKeyValue(subProduct, 'productName')
-        str = arr.join(' + ')
-    }
-    return str
-}
-
-const computeTotalPrice = (item = {}) => {
-    const {subProduct = []} = item
-    let result = 0
-    subProduct?.length && subProduct.forEach(p => {
-        result += p.scrapFactor || 0
-    })
-    return result
-}
-
-const computeId = (item = {}) => {
-    const {id, subProduct} = item
-    if (!subProduct || !subProduct.length) {
-        return id
-    }
-    const ids = ['temp', id, ...extractKeyValue(subProduct, 'id')]
-    return ids.join('+')
-}
 
 const GoodDetailScreen = ({
                               navigation: {navigate, goBack},
@@ -111,6 +42,76 @@ const GoodDetailScreen = ({
     useEffect(() => {
         return getFun
     }, [])
+
+    const flattenProduction = (list = []) => {
+        const result = []
+        list.forEach(production => {
+            const target = production.defaultSub || production
+            for (let index = 0; index < production.quantity; index++) {
+                result.push(target)
+            }
+        })
+        return result
+    }
+
+    const concatSubProduct = item => {
+        const {subProductMap: {changes = [], mores = [], singles = []}} = item
+        const result = []
+        if (singles.length) singles.forEach(p => result.push(p))
+        if (changes.length) changes.forEach(p => result.push(p))
+        if (mores.length) mores.forEach(p => p.price && result.push(p))
+        return result
+    }
+
+    const extractKeyValue = (list, targetKey) => {
+        const arr = []
+        const obj = list.reduce((prev, next) => {
+            prev[next[targetKey]] = (prev[next[targetKey]] + 1) || 1
+            return prev
+        }, {})
+        const entries = Object.entries(obj)
+        entries.sort((firstEl, secondEl) => {
+            const A = firstEl[0]
+            const B = secondEl[0]
+            if (A < B) {
+                return -1
+            }
+            if (A > B) {
+                return 1
+            }
+            return 0
+        })
+        entries.forEach(([key, value]) => arr.push(`${key}*${value}`))
+        return arr
+    }
+
+    const concatDetailDescrition = (item = {}) => {
+        const {detailScreen, subProduct} = item
+        let str = detailScreen
+        if (subProduct?.length) {
+            const arr = extractKeyValue(subProduct, 'productName')
+            str = arr.join(' + ')
+        }
+        return str
+    }
+
+    const computeTotalPrice = (item = {}) => {
+        const {subProduct = []} = item
+        let result = 0
+        subProduct?.length && subProduct.forEach(p => {
+            result += p.scrapFactor || 0
+        })
+        return result
+    }
+
+    const computeId = (item = {}) => {
+        const {id, subProduct} = item
+        if (!subProduct || !subProduct.length) {
+            return id
+        }
+        const ids = ['temp', id, ...extractKeyValue(subProduct, 'id')]
+        return ids.join('+')
+    }
 
     const getFun = () => {
         if (update && type === 'movie' && goodsDetail?.isVirtual !== '1') {

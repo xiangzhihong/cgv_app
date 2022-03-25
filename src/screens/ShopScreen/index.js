@@ -8,7 +8,6 @@ import {
     Text,
     Image,
     Dimensions,
-    ScrollView,
 } from 'react-native'
 import MenuItem from './components/MenuItem'
 import FriendCards from './components/FriendCards'

@@ -1,7 +1,7 @@
 import * as RNLocalize from 'react-native-localize';
 import i18n from 'i18n-js';
 
-const en = require('./locales/en');
+const en = require('./en.json');
 const es = require('./locales/es');
 const cn = require('./locales/zh-cn');
 

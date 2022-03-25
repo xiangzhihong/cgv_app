@@ -28,6 +28,10 @@ const MineScreen = ({ route, thatCd, navigation: { navigate }, updateUserInfoInR
       navigate('LoginScreen')
   }
 
+  function gotoAbout() {
+    navigate('AboutScreen')
+  }
+
   return (
     <ScrollView>
       <QrCodeModal userInfo={userInfo} show={show} onHide={() => setShow(false)} />
@@ -36,7 +40,7 @@ const MineScreen = ({ route, thatCd, navigation: { navigate }, updateUserInfoInR
       <MyRightContainer goto={goto} />
       <View style={{height: 10, width: '100%'}}/>
       <MovieSeenContainers  userInfo={userInfo} goto={goto} />
-      <AboutContainers thatCd={thatCd}  goto={goto} status={mesageReadStatus}/>
+      <AboutContainers thatCd={thatCd}  goto={gotoAbout} status={mesageReadStatus}/>
     </ScrollView>
   )
 }

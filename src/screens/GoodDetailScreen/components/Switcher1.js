@@ -1,11 +1,10 @@
 import React from 'react'
-import {StyleSheet, View, Text, Image, Dimensions,TouchableOpacity} from 'react-native'
+import {StyleSheet, View, Text, Image, Dimensions} from 'react-native'
 import Swiper from 'react-native-swiper'
+import {TouchableOpacity} from 'react-native-gesture-handler'
 import httpConfig from "../../../api/httpConfig";
 
 const {width} = Dimensions.get('window')
-
-const cardWidth = (width - 50) / 3
 
 const splitArray = (arr, len) => {
     const arrLength = arr.length
@@ -16,7 +15,9 @@ const splitArray = (arr, len) => {
     return newArr
 }
 
-const GoodCard = ({item}) => {
+const cardWidth = (width - 50) / 3
+
+const GoodCard = ({item, btnText, onPress}) => {
     const imgWidth = cardWidth - 1
     return (
         <View style={styles.card}>
@@ -28,11 +29,15 @@ const GoodCard = ({item}) => {
                     style={{width: imgWidth, height: imgWidth}}
                 />}
             <Text numberOfLines={1} style={styles.cardTitle}>{item.productName}</Text>
+            {btnText ?
+                <TouchableOpacity style={styles.cardBtn} onPress={onPress}>
+                    <Text style={styles.cardBtnText}>{btnText}</Text>
+                </TouchableOpacity> : <View style={styles.holder}/>}
         </View>
     )
 }
 
-const Section = ({title, len, list = []}) => {
+const Section = ({title, len, btnText, list = [], onPress}) => {
     if (!list.length) {
         return null
     }
@@ -42,16 +47,18 @@ const Section = ({title, len, list = []}) => {
             <View style={styles.titleLayer}>
                 <Text style={styles.title}>{title}（{len}）</Text>
             </View>
-            <View style={{height: cardWidth + 80 }}>
+            <View style={{height: cardWidth + 80 + (btnText ? 38 : 0)}}>
                 <Swiper
                     showsButtons={false}
                     dotStyle={styles.dotStyle}
                     activeDotStyle={styles.activeDotStyle}
                     removeClippedSubviews={false}
-                    loop={false}>
+                    loop={false}
+                >
                     {data.map((items, index) => (
                         <View style={styles.ferry} key={`key-${index}`}>
-                            {items.map((item, i) => <GoodCard key={`key-card-${i}`} item={item}/>)}
+                            {items.map((item, i) => <GoodCard key={`key-card-${i}`} item={item} btnText={btnText}
+                                                              onPress={() => onPress(i)}/>)}
                         </View>
                     ))}
                 </Swiper>
@@ -60,10 +67,15 @@ const Section = ({title, len, list = []}) => {
     )
 }
 
-const Switcher = ({singles = []}) => {
+const Switcher = ({changes = [], more = [], singles = [], onPressChange, onPressMore}) => {
+    if (!singles.length && !changes.length && !more.length) {
+        return null
+    }
     return (
         <View style={styles.switcher}>
-            <Section title="不可换选" len={singles?.length} list={singles}/>
+            <Section title="不可换选" len={singles?.length} btnText="" list={singles}/>
+            <Section title="可换选" len={changes?.length} btnText="换一换" list={changes} onPress={onPressChange}/>
+            <Section title="更多选择" len={more?.length} btnText="选一选" list={more} onPress={onPressMore}/>
         </View>
     )
 }
@@ -112,7 +124,6 @@ const styles = StyleSheet.create({
     cardTitle: {
         marginTop: 10,
         marginHorizontal: 3,
-        marginBottom: 5
     },
     cardBtn: {
         justifyContent: 'center',

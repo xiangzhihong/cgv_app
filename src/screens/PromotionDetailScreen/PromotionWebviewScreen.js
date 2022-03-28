@@ -5,12 +5,12 @@ import { WebView } from 'react-native-webview'
 const { width, height } = Dimensions.get('window')
 
 const PromotionWebviewScreen = ({ route }) => {
-  const {params = {}} = route
-
+  const {serviceUrl} = route.params || {}
+  console.log(serviceUrl)
   return (
     <View style={styles.bg}>
       <WebView
-        style={styles.web} source={{ uri: params?.img }}/>
+        style={styles.web} source={{ uri: serviceUrl}}/>
     </View>
   )
 }

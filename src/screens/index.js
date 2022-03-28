@@ -31,6 +31,8 @@ import UserAgreementScreen from "./UserAgreementScreen"
 import UserPrivacyScreen from "./UserPrivacyScreen"
 import FriendCardDetailScreen from "./FriendCardDetailScreen/FriendCardDetailScreen";
 import AboutScreen from "./AboutScreen";
+import ServiceScreen from "./ServiceScreen/ServiceScreen";
+import PromotionWebviewScreen from "./PromotionDetailScreen/PromotionWebviewScreen";
 
 export {
     ShopingCartScreen,
@@ -46,6 +48,17 @@ export const stacks = [
         name: "CitySelectScreen",
         component: CitySelectScreen,
         options: {title: '选择城市'},
+    },
+    {
+        name: 'PromotionWebviewScreen',
+        component: PromotionWebviewScreen,
+        options: ({route}) => {
+            const {params = {}} = route
+            const {title = '在线客服'} = params
+            return {
+                title,
+            }
+        },
     },
     {
         name: 'PromotionDetailScreen',
@@ -413,6 +426,11 @@ export const stacks = [
         name: 'AboutScreen',
         component: AboutScreen,
         options: {title: '关于CGV'},
+    },
+    {
+        name: 'ServiceScreen',
+        component: ServiceScreen,
+        options: {title: '客服'},
     },
 ];
 

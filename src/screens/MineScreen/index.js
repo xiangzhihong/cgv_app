@@ -24,12 +24,14 @@ const MineScreen = ({ route, thatCd, navigation: { navigate }, updateUserInfoInR
 
   }
 
-  function goto() {
+  function goto(routeName) {
+    if (routeName === 'AboutScreen') {
+      navigate('AboutScreen')
+    } else if (routeName === 'ServiceScreen') {
+      navigate(routeName, routeName === 'ServiceScreen' ?{thatCd}:null)
+    } else {
       navigate('LoginScreen')
-  }
-
-  function gotoAbout() {
-    navigate('AboutScreen')
+    }
   }
 
   return (
@@ -40,7 +42,7 @@ const MineScreen = ({ route, thatCd, navigation: { navigate }, updateUserInfoInR
       <MyRightContainer goto={goto} />
       <View style={{height: 10, width: '100%'}}/>
       <MovieSeenContainers  userInfo={userInfo} goto={goto} />
-      <AboutContainers thatCd={thatCd}  goto={gotoAbout} status={mesageReadStatus}/>
+      <AboutContainers thatCd={thatCd}  goto={goto} status={mesageReadStatus}/>
     </ScrollView>
   )
 }

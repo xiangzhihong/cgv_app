@@ -21,7 +21,7 @@ const Navs = [
   {
     icon: service,
     title: '客服',
-    route: 'CustomerServiceScreen',
+    route: 'ServiceScreen',
     needLoggedIn: true,
   },
   {

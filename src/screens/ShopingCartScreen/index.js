@@ -1,26 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
     View,
     Text,
     StyleSheet,
     TouchableOpacity,
     FlatList,
-    Dimensions, Modal,
+    Dimensions,
 } from 'react-native';
 import {tools} from '../../utils';
 import GoodItem from '../../common/GoodItem/GoodItem';
 import ShoppingCartBar from '../GoodListScreen/components/ShoppingCartBar';
 import Holder from '../../common/Holder';
 
-
 const {width, height} = Dimensions.get('window')
 
 const ShopingCart = ({
                          navigation: {goBack, navigate},
                          items,
-                         route,
-                         state,
-                         isLoggedIn,
                          cartTotalQuantity,
                          cartTotalAmount,
                          resetCheckoutProductState: _resetCheckoutProductState,
@@ -43,23 +39,17 @@ const ShopingCart = ({
     };
 
     const createGoodOrder = async () => {
-        if (isLoggedIn) {
-            if (arr.length < 1) {
-                tools.alert('购物车不能为空！', '', [
-                    {
-                        text: '确定',
-                        onPress: () => {
-                            goBack();
-                            // global.siblingAlert.destroy();
-                        },
+        if (arr.length < 1) {
+            tools.alert('购物车不能为空！', '', [
+                {
+                    text: '确定',
+                    onPress: () => {
+                        goBack();
+                        // global.siblingAlert.destroy();
                     },
-                ]);
-            } else {
-                tools.loading();
-                _createTicketOrder(obj);
-            }
+                },
+            ]);
         } else {
-            goBack()
             navigate('MyModal', {screen: 'LoginScreen'});
         }
     };
@@ -106,13 +96,12 @@ const ShopingCart = ({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         flex: 1,
         justifyContent: 'flex-end',
     },
     holder: {
         flex: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     box: {
         height: height * 0.6,

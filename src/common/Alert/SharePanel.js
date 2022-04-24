@@ -64,7 +64,6 @@ export default (
     },
 ) => {
     const top = new Animated.Value(0)
-
     const close = () => {
         Animated.timing(top, {
             duration: 120,

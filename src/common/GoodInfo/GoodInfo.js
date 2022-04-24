@@ -56,7 +56,7 @@ const GoodInfo = ({
                 </View>
                 <View style={styles.btns}>
                     {(showCountBtnsForced || item.isVirtual === '0') &&
-                    <CountBtns count={quantity} reduce={() => reduce(item)} add={() => tools.Toast.toast('暂未实现', 1)}/>}
+                    <CountBtns count={quantity} reduce={() => reduce(item)} add={() => tools.Toast.toast('加入购物车', 1)}/>}
                     {(!onLikePress && !showCountBtnsForced && item.isVirtual !== '0') &&
                     <View style={styles.btnBg}><Text style={styles.btnText}>套餐换选</Text></View>}
                 </View>

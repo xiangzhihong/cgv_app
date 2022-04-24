@@ -1,15 +1,22 @@
 import * as React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import MainStackScreen from './MainStackScreen';
 import ModalScreen from './ModalScreen'
 import ExceptionScreen from '../screens/ExceptionScreen'
 import {navigationRef} from '../utils';
-import {LightTheme} from '../theme';
 import AlertScreen from "./AlertScreen";
 import {StatusBar} from "react-native";
 
 const RootStack = createStackNavigator();
+
+const navTheme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        background: 'transparent',
+    },
+};
 
 const Navigator = () => {
     return (
@@ -17,9 +24,9 @@ const Navigator = () => {
             {/*<StatusBar*/}
             {/*    StatusBarAnimation="fade"*/}
             {/*    backgroundColor="#fff"*/}
+            {/*    barStyle={'light-content'}*/}
             {/*/>*/}
-            <NavigationContainer ref={navigationRef}
-                                 theme={LightTheme}>
+            <NavigationContainer ref={navigationRef}>
                 <RootStack.Navigator mode="modal" initialRouteName="Main">
                     <RootStack.Screen
                         name="Main"
@@ -29,7 +36,25 @@ const Navigator = () => {
                     <RootStack.Screen
                         name="MyModal"
                         component={ModalScreen}
-                        options={{headerShown: false}}/>
+                        options={{
+                            headerShown: false,
+                            cardStyle: {
+                                backgroundColor: 'transparent',
+                                shadowColor: 'transparent'
+                            },
+                            cardStyleInterpolator: ({current: {progress}}) => {
+                                return {
+                                    overlayStyle: {
+                                        opacity: progress.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [0, 0.5],
+                                            extrapolate: 'clamp',
+                                        }),
+                                    },
+                                }
+                            },
+                        }}
+                    />
                     <RootStack.Screen
                         name="Alert"
                         component={AlertScreen}
